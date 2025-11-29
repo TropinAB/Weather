@@ -4,22 +4,6 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function loadCurrentLocation(locationEl) {
-  const labelLoading = document.createElement("label");
-  labelLoading.innerText = `Загрузка данных о текущем расположении...`;
-  labelLoading.classList.add("loading");
-  locationEl.append(labelLoading);
-
-  await sleep(3000);
-
-  // эмитация загрузки данных
-  labelLoading.remove();
-
-  return {
-    city: "Санкт-Петербург",
-  };
-}
-
 function createElementWithClassAndText(tagName, className, text) {
   const newEl = document.createElement(tagName);
   newEl.classList.add(className);
@@ -38,6 +22,24 @@ function addInfoElement(parentEl, description, value) {
   );
   divEl.append(createElementWithClassAndText("label", "info-value", value));
   parentEl.append(divEl);
+}
+
+async function loadCurrentLocation(locationEl) {
+  const labelLoading = createElementWithClassAndText(
+    "label",
+    "loading",
+    "Загрузка данных о текущем расположении...",
+  );
+  locationEl.append(labelLoading);
+
+  await sleep(3000);
+
+  // эмитация загрузки данных
+  labelLoading.remove();
+
+  return {
+    city: "Санкт-Петербург",
+  };
 }
 
 function displayLocationInfo(locationEl, location) {
