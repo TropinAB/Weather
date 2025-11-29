@@ -1,11 +1,6 @@
 import "./runApp.css";
 import { createElementWithClassAndText } from "./toolsDOM.js";
-import {
-  loadCurrentLocation,
-  displayLocationInfo,
-  loadWeatherInfo,
-  displayWeatherInfo,
-} from "./weather.js";
+import { prepareWeatherData } from "./weather.js";
 
 export async function runApp(el) {
   el.append(
@@ -28,10 +23,5 @@ export async function runApp(el) {
   );
   el.append(weatherEl);
 
-  const location = await loadCurrentLocation(locationEl);
-  if (location) {
-    displayLocationInfo(locationEl, location);
-    const weather = await loadWeatherInfo(weatherEl);
-    if (weather) displayWeatherInfo(weatherEl, weather);
-  }
+  prepareWeatherData(locationEl, weatherEl);
 }

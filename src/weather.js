@@ -20,14 +20,16 @@ export async function loadCurrentLocation(locationEl) {
 }
 
 export function displayLocationInfo(locationEl, location) {
-  locationEl.append(
-    createElementWithClassAndText(
-      "label",
-      "info-header",
-      "Данные о местоположении",
-    ),
-  );
-  if (location.city) addInfoElement(locationEl, "Город", location.city);
+  if (location) {
+    locationEl.append(
+      createElementWithClassAndText(
+        "label",
+        "info-header",
+        "Данные о местоположении",
+      ),
+    );
+    if (location.city) addInfoElement(locationEl, "Город", location.city);
+  }
 }
 
 export async function loadWeatherInfo(weatherEl) {
@@ -73,4 +75,11 @@ export function displayWeatherInfo(weatherEl, weather) {
       ),
     );
   }
+}
+
+export async function prepareWeatherData(locationEl, weatherEl) {
+  const location = await loadCurrentLocation(locationEl);
+  displayLocationInfo(locationEl, location);
+  const weather = await loadWeatherInfo(weatherEl);
+  displayWeatherInfo(weatherEl, weather);
 }
