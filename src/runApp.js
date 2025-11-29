@@ -103,11 +103,25 @@ function displayWeatherInfo(weatherEl, weather) {
 }
 
 export async function runApp(el) {
-  el.innerHTML = `<h1 class="header">Моё первое приложение "Погода"</h1>
-  <div class="location border"></div>
-  <div class="weather border"></div>`;
-  const locationEl = el.querySelector(".location");
-  const weatherEl = el.querySelector(".weather");
+  el.append(
+    createElementWithClassAndText(
+      "h1",
+      "header",
+      `Моё первое приложение "Погода"`,
+    ),
+  );
+  const locationEl = createElementWithClassAndText(
+    "div",
+    ["location", "border"],
+    "",
+  );
+  el.append(locationEl);
+  const weatherEl = createElementWithClassAndText(
+    "div",
+    ["weather", "border"],
+    "",
+  );
+  el.append(weatherEl);
 
   const location = await loadCurrentLocation(locationEl);
   if (location) {
