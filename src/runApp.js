@@ -1,7 +1,7 @@
 import "./runApp.css";
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function loadCurrentLocation(locationEl) {
@@ -15,11 +15,40 @@ async function loadCurrentLocation(locationEl) {
   // эмитация загрузки данных
   labelLoading.remove();
 
-  return {};
+  return {
+    city: "Санкт-Петербург",
+  };
+}
+
+function createElementWithClassAndText(tagName, className, text) {
+  const newEl = document.createElement(tagName);
+  newEl.classList.add(className);
+  newEl.innerText = text;
+  return newEl;
+}
+
+function addInfoElement(parentEl, description, value) {
+  const divEl = document.createElement("div");
+  divEl.append(
+    createElementWithClassAndText(
+      "label",
+      "info-description",
+      `${description}:`,
+    ),
+  );
+  divEl.append(createElementWithClassAndText("label", "info-value", value));
+  parentEl.append(divEl);
 }
 
 function displayLocationInfo(locationEl, location) {
-
+  locationEl.append(
+    createElementWithClassAndText(
+      "label",
+      "info-header",
+      "Данные о местоположении",
+    ),
+  );
+  if (location.city) addInfoElement(locationEl, "Город", location.city);
 }
 
 async function loadWeatherInfo(weatherEl) {
@@ -46,7 +75,6 @@ export async function runApp(el) {
   const location = await loadCurrentLocation(locationEl);
   if (location) {
     displayLocationInfo(locationEl, location);
-
     await loadWeatherInfo(weatherEl);
   }
 }
