@@ -32,9 +32,9 @@ async function loadCurrentLocation(locationEl) {
   );
   locationEl.append(labelLoading);
 
+  // эмитация загрузки данных
   await sleep(3000);
 
-  // эмитация загрузки данных
   labelLoading.remove();
 
   return {
