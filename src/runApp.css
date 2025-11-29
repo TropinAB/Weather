@@ -1,6 +1,16 @@
-.runApp {
+body {
+  background-color: lightcyan;
+}
+.header {
   font-size: 64px;
   color: orange;
-  background-color: lightcyan;
   text-align: center;
+}
+.location {
+  align-content: center;
+}
+.loading {
+  display: block;
+  text-align: center;
+  font-size: 20px;
 }
