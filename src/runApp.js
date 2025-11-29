@@ -1,5 +1,27 @@
 import "./runApp.css";
+import { createElementWithClassAndText } from "./toolsDOM.js";
+import { prepareWeatherData } from "./weather.js";
 
-export function runApp(el) {
-  el.innerHTML = `<h1 class="runApp">Доброго времени суток!!!!!!</h1>`;
+export async function runApp(el) {
+  el.append(
+    createElementWithClassAndText(
+      "h1",
+      "header",
+      `Моё первое приложение "Погода"`,
+    ),
+  );
+  const locationEl = createElementWithClassAndText(
+    "div",
+    ["location", "border"],
+    "",
+  );
+  el.append(locationEl);
+  const weatherEl = createElementWithClassAndText(
+    "div",
+    ["weather", "border"],
+    "",
+  );
+  el.append(weatherEl);
+
+  prepareWeatherData(locationEl, weatherEl);
 }
