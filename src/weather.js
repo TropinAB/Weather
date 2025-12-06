@@ -34,7 +34,7 @@ export function displayLocationInfo(locationEl, location) {
   }
 }
 
-export async function loadWeatherInfo(weatherEl, city) {
+export async function loadWeatherInfo(weatherEl, latitude, longitude) {
   const labelLoading = createElementWithClassAndText(
     "label",
     "loading",
@@ -42,9 +42,9 @@ export async function loadWeatherInfo(weatherEl, city) {
   );
   weatherEl.append(labelLoading);
 
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${city}&appid=${API_ID}&lang=ru`,
-  );
+  //city = encodeURIComponent(city); //заменить спецсимволы на коды
+  const url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${latitude}&lon=${longitude}&appid=${API_ID}&lang=ru`;
+  const response = await fetch(url);
   const data = await response.json();
 
   labelLoading.remove();
@@ -83,6 +83,10 @@ export function displayWeatherInfo(weatherEl, weather) {
 export async function prepareWeatherData(locationEl, weatherEl) {
   const location = await loadCurrentLocation(locationEl);
   displayLocationInfo(locationEl, location);
-  const weather = await loadWeatherInfo(weatherEl, location.city);
+  const weather = await loadWeatherInfo(
+    weatherEl,
+    location.latitude,
+    location.longitude,
+  );
   displayWeatherInfo(weatherEl, weather);
 }
