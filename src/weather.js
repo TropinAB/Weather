@@ -42,7 +42,6 @@ export async function loadWeatherInfo(weatherEl, latitude, longitude) {
   );
   weatherEl.append(labelLoading);
 
-  //city = encodeURIComponent(city); //заменить спецсимволы на коды
   const url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${latitude}&lon=${longitude}&appid=${API_ID}&lang=ru`;
   const response = await fetch(url);
   const data = await response.json();
