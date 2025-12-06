@@ -10,13 +10,12 @@ export async function loadCurrentLocation(locationEl) {
   locationEl.append(labelLoading);
 
   // эмитация загрузки данных
-  await sleep(3000);
+  const response = await fetch("https://get.geojs.io/v1/ip/geo.json");
+  const data = await response.json();
 
   labelLoading.remove();
 
-  return {
-    city: "Санкт-Петербург",
-  };
+  return data;
 }
 
 export function displayLocationInfo(locationEl, location) {
