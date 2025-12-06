@@ -1,5 +1,27 @@
 import * as weatherModule from "./weather.js";
 
+global.fetch = jest.fn((url) => {
+  if (url.startsWith("https://get.geojs.io")) {
+    return Promise.resolve({
+      json: () =>
+        Promise.resolve({
+          country: "РФ",
+          city: "Санкт-Петербург",
+        }),
+    });
+  } else if (url.startsWith("https://api.openweathermap.org")) {
+    return Promise.resolve({
+      json: () =>
+        Promise.resolve(
+          JSON.parse(
+            `{"coord":{"lon":30.2642,"lat":59.8944},"weather":[{"id":600,"main":"Snow","description":"небольшой снег","icon":"13d"}],"base":"stations","main":{"temp":1.7,"feels_like":-2.79,"temp_min":1.7,"temp_max":2.08,"pressure":1009,"humidity":94,"sea_level":1009,"grnd_level":1007},"visibility":10000,"wind":{"speed":5,"deg":210},"snow":{"1h":0.21},"clouds":{"all":75},"dt":1764419706,"sys":{"type":2,"id":2045711,"country":"RU","sunrise":1764397741,"sunset":1764421553},"timezone":10800,"id":498817,"name":"Санкт-Петербург","cod":200}`,
+          ),
+        ),
+    });
+  }
+  return Promise.reject();
+});
+
 describe("Check prepareWeatherData", () => {
   it("prepareWeatherData is a function", () =>
     expect(weatherModule.prepareWeatherData).toBeInstanceOf(Function));
@@ -25,6 +47,7 @@ describe("Check loadCurrentLocation", () => {
     const location = await weatherModule.loadCurrentLocation(locationEl);
 
     expect(location).toBeInstanceOf(Object);
+    expect(location).toHaveProperty("country");
     expect(location).toHaveProperty("city");
   }, 10000);
 });
@@ -66,10 +89,11 @@ describe("Check displayLocationInfo", () => {
   it("Test location data", () => {
     const locationEl = document.createElement("div");
     const locationData = {
+      country: "РФ",
       city: "Some city",
     };
     weatherModule.displayLocationInfo(locationEl, locationData);
-    expect(locationEl.children).toHaveLength(2);
+    expect(locationEl.children).toHaveLength(3);
     expect(locationEl.children[1].classList).toHaveLength(0);
     expect(locationEl.children[1].children).toHaveLength(2);
     expect(locationEl.children[1].children[0].classList[0]).toEqual(

@@ -1,5 +1,11 @@
 import { runApp } from "./runApp";
 
+global.fetch = jest.fn(() => {
+  return Promise.resolve({
+    json: () => Promise.resolve({}),
+  });
+});
+
 describe("Check runApp", () => {
   it("runApp is a function", () => expect(runApp).toBeInstanceOf(Function));
   it("some test 2", () => {
