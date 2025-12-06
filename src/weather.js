@@ -27,6 +27,8 @@ export function displayLocationInfo(locationEl, location) {
         "Данные о местоположении",
       ),
     );
+    if (location.country)
+      addInfoElement(locationEl, "Страна", location.country);
     if (location.city) addInfoElement(locationEl, "Город", location.city);
   }
 }
