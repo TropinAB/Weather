@@ -1,149 +1,184 @@
 import * as weatherModule from "./weather.js";
 
-global.fetch = jest.fn((url) => {
-  if (url.startsWith("https://get.geojs.io")) {
-    return Promise.resolve({
-      json: () =>
-        Promise.resolve({
-          country: "РФ",
-          city: "Санкт-Петербург",
-        }),
-    });
-  } else if (url.startsWith("https://api.openweathermap.org")) {
-    return Promise.resolve({
-      json: () =>
-        Promise.resolve(
-          JSON.parse(
-            `{"coord":{"lon":30.2642,"lat":59.8944},"weather":[{"id":600,"main":"Snow","description":"небольшой снег","icon":"13d"}],"base":"stations","main":{"temp":1.7,"feels_like":-2.79,"temp_min":1.7,"temp_max":2.08,"pressure":1009,"humidity":94,"sea_level":1009,"grnd_level":1007},"visibility":10000,"wind":{"speed":5,"deg":210},"snow":{"1h":0.21},"clouds":{"all":75},"dt":1764419706,"sys":{"type":2,"id":2045711,"country":"RU","sunrise":1764397741,"sunset":1764421553},"timezone":10800,"id":498817,"name":"Санкт-Петербург","cod":200}`,
-          ),
-        ),
-    });
-  }
-  return Promise.reject();
-});
+global.fetch = jest.fn();
+const ERROR_MESSAGE = "Network error";
+const errorResponse = {
+  ok: false,
+  status: 404,
+  statusText: "Страница не найдена",
+};
+const nullResponse = {
+  ok: true,
+  json: () => Promise.resolve(null),
+};
+const successDataGeo = {
+  accuracy: 20,
+  city: "St Petersburg",
+  timezone: "Europe/Moscow",
+  organization: "AS12389 Rostelecom",
+  ip: "178.66.128.229",
+  asn: 12389,
+  area_code: "0",
+  organization_name: "Rostelecom",
+  country_code: "RU",
+  country_code3: "RUS",
+  continent_code: "EU",
+  country: "Russia",
+  region: "St.-Petersburg",
+  latitude: "59.8983",
+  longitude: "30.2618",
+};
+const successResponseGeo = {
+  ok: true,
+  json: () => Promise.resolve(successDataGeo),
+};
+const successDataWeather = {
+  coord: {
+    lon: 30.2642,
+    lat: 59.8944,
+  },
+  weather: [
+    {
+      id: 600,
+      main: "Snow",
+      description: "небольшой снег",
+      icon: "13d",
+    },
+  ],
+  base: "stations",
+  main: {
+    temp: 1.7,
+    feels_like: -2.79,
+    temp_min: 1.7,
+    temp_max: 2.08,
+    pressure: 1009,
+    humidity: 94,
+    sea_level: 1009,
+    grnd_level: 1007,
+  },
+  visibility: 10000,
+  wind: {
+    speed: 5,
+    deg: 210,
+  },
+  snow: {
+    "1h": 0.21,
+  },
+  clouds: {
+    all: 75,
+  },
+  dt: 1764419706,
+  sys: {
+    type: 2,
+    id: 2045711,
+    country: "RU",
+    sunrise: 1764397741,
+    sunset: 1764421553,
+  },
+  timezone: 10800,
+  id: 498817,
+  name: "Санкт-Петербург",
+  cod: 200,
+};
+const successResponseWeather = {
+  ok: true,
+  json: () => Promise.resolve(successDataWeather),
+};
 
-describe("Check prepareWeatherData", () => {
-  it("prepareWeatherData is a function", () =>
-    expect(weatherModule.prepareWeatherData).toBeInstanceOf(Function));
-
-  it("prepareWeatherData return some data in elements", async () => {
-    const locationEl = document.createElement("div");
-    const weatherEl = document.createElement("div");
-
-    await weatherModule.prepareWeatherData(locationEl, weatherEl);
-
-    expect(locationEl.innerHTML.length).toBeGreaterThanOrEqual(0);
-    expect(weatherEl.innerHTML.length).toBeGreaterThanOrEqual(0);
-  }, 10000);
-});
-
-describe("Check loadCurrentLocation", () => {
-  it("loadCurrentLocation is a function", () =>
-    expect(weatherModule.loadCurrentLocation).toBeInstanceOf(Function));
-
-  it("loadCurrentLocation return values", async () => {
-    const locationEl = document.createElement("div");
-
-    const location = await weatherModule.loadCurrentLocation(locationEl);
-
-    expect(location).toBeInstanceOf(Object);
-    expect(location).toHaveProperty("country");
-    expect(location).toHaveProperty("city");
-  }, 10000);
-});
-
-describe("Check loadWeatherInfo", () => {
-  it("loadWeatherInfo is a function", () =>
-    expect(weatherModule.loadWeatherInfo).toBeInstanceOf(Function));
-
-  it("loadWeatherInfo return values", async () => {
-    const weatherEl = document.createElement("div");
-
-    const weather = await weatherModule.loadWeatherInfo(weatherEl);
-
-    expect(weather).toBeInstanceOf(Object);
-    expect(weather).toHaveProperty("main");
-    expect(weather).toHaveProperty("weather");
-  }, 10000);
-});
-
-describe("Check displayLocationInfo", () => {
-  it("displayLocationInfo is a function", () =>
-    expect(weatherModule.displayLocationInfo).toBeInstanceOf(Function));
-
-  it("Test null data", () => {
-    const locationEl = document.createElement("div");
-    weatherModule.displayLocationInfo(locationEl, null);
-    expect(locationEl.children).toHaveLength(0);
+describe("Check loadAndRenderWeatherData", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it("Test clear data", () => {
-    const locationEl = document.createElement("div");
-    const locationData = {};
-    weatherModule.displayLocationInfo(locationEl, locationData);
-    expect(locationEl.children).toHaveLength(1);
-    expect(locationEl.children[0].classList).toHaveLength(1);
-    expect(locationEl.children[0].classList[0]).toEqual("info-header");
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
-  it("Test location data", () => {
-    const locationEl = document.createElement("div");
-    const locationData = {
-      country: "РФ",
-      city: "Some city",
-    };
-    weatherModule.displayLocationInfo(locationEl, locationData);
-    expect(locationEl.children).toHaveLength(3);
-    expect(locationEl.children[1].classList).toHaveLength(0);
-    expect(locationEl.children[1].children).toHaveLength(2);
-    expect(locationEl.children[1].children[0].classList[0]).toEqual(
-      "info-description",
+  it("loadAndRenderWeatherData is a function", () =>
+    expect(weatherModule.loadAndRenderWeatherData).toBeInstanceOf(Function));
+
+  it("loadAndRenderWeatherData render page with errorResponse on Geo", async () => {
+    fetch.mockResolvedValueOnce(errorResponse);
+    const element = document.createElement("div");
+
+    await weatherModule.loadAndRenderWeatherData(element);
+
+    expect(element.innerHTML).toMatchInlineSnapshot(
+      `"<h1 class="header"></h1><div class="location border"><label class="error"></label></div><div class="weather border"><label class="loading"></label></div>"`,
     );
-    expect(locationEl.children[1].children[1].classList[0]).toEqual(
-      "info-value",
+  });
+
+  it("loadAndRenderWeatherData render page with fetch reject on Geo", async () => {
+    fetch.mockRejectedValue(new Error(ERROR_MESSAGE));
+    const element = document.createElement("div");
+
+    await weatherModule.loadAndRenderWeatherData(element);
+
+    expect(element.innerHTML).toMatchInlineSnapshot(
+      `"<h1 class="header"></h1><div class="location border"><label class="error"></label></div><div class="weather border"><label class="loading"></label></div>"`,
     );
   });
-});
 
-describe("Check displayWeatherInfo", () => {
-  it("displayWeatherInfo is a function", () =>
-    expect(weatherModule.displayWeatherInfo).toBeInstanceOf(Function));
+  it("loadAndRenderWeatherData render page with fetch reject on Weather", async () => {
+    fetch
+      .mockResolvedValueOnce(successResponseGeo)
+      .mockRejectedValue(new Error(ERROR_MESSAGE));
+    const element = document.createElement("div");
 
-  it("Test null data", () => {
-    const weatherEl = document.createElement("div");
-    weatherModule.displayWeatherInfo(weatherEl, null);
-    expect(weatherEl.children).toHaveLength(1);
-    expect(weatherEl.children[0].classList).toHaveLength(1);
-    expect(weatherEl.children[0].classList[0]).toEqual("weather-error");
+    await weatherModule.loadAndRenderWeatherData(element);
+
+    expect(element.innerHTML).toMatchInlineSnapshot(
+      `"<h1 class="header"></h1><div class="location border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div><div class="weather border"><label class="error"></label></div>"`,
+    );
   });
 
-  it("Test clear data", () => {
-    const weatherEl = document.createElement("div");
-    const weatherData = {};
-    weatherModule.displayWeatherInfo(weatherEl, weatherData);
-    expect(weatherEl.children).toHaveLength(1);
-    expect(weatherEl.children[0].classList).toHaveLength(1);
-    expect(weatherEl.children[0].classList[0]).toEqual("info-header");
+  it("loadAndRenderWeatherData render page with nullResponse on Geo", async () => {
+    fetch.mockResolvedValueOnce(nullResponse);
+    const element = document.createElement("div");
+
+    await weatherModule.loadAndRenderWeatherData(element);
+
+    expect(element.innerHTML).toMatchInlineSnapshot(
+      `"<h1 class="header"></h1><div class="location border"><label class="error"></label></div><div class="weather border"><label class="loading"></label></div>"`,
+    );
   });
 
-  it("Test weather data", () => {
-    const weatherEl = document.createElement("div");
-    const weatherData = {
-      main: {
-        temp: 15,
-        feels_like: 10,
-        humidity: 75,
-      },
-      wind: {
-        deg: 90,
-        speed: 11,
-      },
-      clouds: {
-        all: 10,
-      },
-    };
-    weatherModule.displayWeatherInfo(weatherEl, weatherData);
-    expect(weatherEl.children).toHaveLength(7);
-    expect(weatherEl.children[0].classList).toHaveLength(1);
+  it("loadAndRenderWeatherData render page with errorResponse on Weather", async () => {
+    fetch
+      .mockResolvedValueOnce(successResponseGeo)
+      .mockResolvedValueOnce(errorResponse);
+    const element = document.createElement("div");
+
+    await weatherModule.loadAndRenderWeatherData(element);
+
+    expect(element.innerHTML).toMatchInlineSnapshot(
+      `"<h1 class="header"></h1><div class="location border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div><div class="weather border"><label class="error"></label></div>"`,
+    );
+  });
+
+  it("loadAndRenderWeatherData render page with nullResponse on Weather", async () => {
+    fetch
+      .mockResolvedValueOnce(successResponseGeo)
+      .mockResolvedValueOnce(nullResponse);
+    const element = document.createElement("div");
+
+    await weatherModule.loadAndRenderWeatherData(element);
+
+    expect(element.innerHTML).toMatchInlineSnapshot(
+      `"<h1 class="header"></h1><div class="location border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div><div class="weather border"><label class="error"></label></div>"`,
+    );
+  });
+
+  it("loadAndRenderWeatherData render page with success Response", async () => {
+    fetch
+      .mockResolvedValueOnce(successResponseGeo)
+      .mockResolvedValueOnce(successResponseWeather);
+    const element = document.createElement("div");
+
+    await weatherModule.loadAndRenderWeatherData(element);
+
+    expect(element.innerHTML).toMatchInlineSnapshot(
+      `"<h1 class="header"></h1><div class="location border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div><div class="weather border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div>"`,
+    );
   });
 });

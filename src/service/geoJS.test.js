@@ -28,13 +28,13 @@ describe("Check getCurrentLocationData function", () => {
   it("test Network error", async () => {
     fetch.mockRejectedValue(new Error(ERROR_MESSAGE));
 
-    await expect(getCurrentLocationData()).rejects.toThrow(ERROR_MESSAGE);
+    await expect(getCurrentLocationData()).resolves.toThrow(ERROR_MESSAGE);
     expect(fetch).toHaveBeenCalledTimes(1);
   });
   it("test Error response", async () => {
     fetch.mockResolvedValueOnce(errorResponse);
 
-    await expect(getCurrentLocationData()).rejects.toThrow(
+    await expect(getCurrentLocationData()).resolves.toThrow(
       `Ошибка 404: Страница не найдена`,
     );
     expect(fetch).toHaveBeenCalledTimes(1);

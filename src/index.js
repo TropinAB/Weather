@@ -1,3 +1,3 @@
-import { runApp } from "./runApp";
+import { loadAndRenderWeatherData } from "./weather";
 
-runApp(document.body);
+loadAndRenderWeatherData(document.body);

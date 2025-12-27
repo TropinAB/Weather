@@ -37,9 +37,13 @@ const API_ID = [
   .join("");
 
 export async function getWeatherData(latitude, longitude) {
-  const url = `${WEATHER_URL}?units=metric&lat=${latitude}&lon=${longitude}&appid=${API_ID}&lang=ru`;
-  const response = await fetch(url);
-  if (response.ok) return await response.json();
-  // Вернуть ошибку
-  throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
+  try {
+    const url = `${WEATHER_URL}?units=metric&lat=${latitude}&lon=${longitude}&appid=${API_ID}&lang=ru`;
+    const response = await fetch(url);
+    if (response.ok) return await response.json();
+    // Вернуть ошибку
+    return new Error(`Ошибка ${response.status}: ${response.statusText}`);
+  } catch (error) {
+    return error;
+  }
 }
