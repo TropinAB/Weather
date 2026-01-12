@@ -51,9 +51,9 @@ const config = {
   // coverageThreshold: undefined,
   coverageThreshold: {
     global: {
-      branches: 60,
-      functions: 60,
-      lines: 60,
+      branches: 80,
+      functions: 80,
+      lines: 80,
     },
   },
   // A path to a custom dependency extractor
