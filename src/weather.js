@@ -1,23 +1,40 @@
 import "./weather.css";
 import {
   renderMainPage,
-  renderLoadingMessage,
+  renderLocationloading,
+  renderWeatherloading,
   renderLocationInfo,
   renderWeatherInfo,
 } from "./views/weather";
-import { getCurrentLocationData } from "./service/geoJS";
-import { getWeatherData } from "./service/openWeatherMap";
+import "./service/geoJS";
+import "./service/openWeatherMap";
+import { eventBus } from "./service/EventBus";
+
+function processWeatherData(weather) {
+  renderWeatherInfo(weather);
+}
+
+function processLocationData(location) {
+  renderLocationInfo(location);
+
+  if (location && location.latitude && location.longitude) {
+    renderWeatherloading();
+    eventBus.on("weather:loaded", processWeatherData);
+    eventBus.trigger("weather:getForLocation", [
+      location.latitude,
+      location.longitude,
+    ]);
+  }
+}
+
+function requestLocationData() {
+  renderLocationloading();
+  eventBus.on("geo:loaded", processLocationData);
+  eventBus.trigger("geo:getLocation");
+}
 
 export async function loadAndRenderWeatherData(element) {
-  const [locationEl, weatherEl] = renderMainPage(element);
+  renderMainPage(element);
 
-  renderLoadingMessage(locationEl, "Загрузка данных о текущем расположении...");
-  const location = await getCurrentLocationData();
-  renderLocationInfo(locationEl, location);
-
-  renderLoadingMessage(weatherEl, "Загрузка данных о погоде...");
-  if (location && location.latitude && location.longitude) {
-    const weather = await getWeatherData(location.latitude, location.longitude);
-    renderWeatherInfo(weatherEl, weather);
-  }
+  requestLocationData();
 }

@@ -1,4 +1,6 @@
-export function createElementWithClassAndText(tagName, className, text) {
+let locationEl, weatherEl;
+
+function createElementWithClassAndText(tagName, className, text) {
   const newEl = document.createElement(tagName);
   if (Array.isArray(className)) {
     className.forEach((classNm) => newEl.classList.add(classNm));
@@ -9,7 +11,7 @@ export function createElementWithClassAndText(tagName, className, text) {
   return newEl;
 }
 
-export function addInfoElement(parentEl, description, value) {
+function addInfoElement(parentEl, description, value) {
   const divEl = document.createElement("div");
   divEl.append(
     createElementWithClassAndText(
@@ -30,23 +32,13 @@ export function renderMainPage(element) {
       `Моё первое приложение "Погода"`,
     ),
   );
-  const locationEl = createElementWithClassAndText(
-    "div",
-    ["location", "border"],
-    "",
-  );
+  locationEl = createElementWithClassAndText("div", ["location", "border"], "");
   element.append(locationEl);
-  const weatherEl = createElementWithClassAndText(
-    "div",
-    ["weather", "border"],
-    "",
-  );
+  weatherEl = createElementWithClassAndText("div", ["weather", "border"], "");
   element.append(weatherEl);
-
-  return [locationEl, weatherEl];
 }
 
-export function renderLoadingMessage(element, message) {
+function renderLoadingMessage(element, message) {
   const labelLoading = createElementWithClassAndText(
     "label",
     "loading",
@@ -55,7 +47,15 @@ export function renderLoadingMessage(element, message) {
   element.append(labelLoading);
 }
 
-export function renderLocationInfo(locationEl, location) {
+export function renderLocationloading() {
+  renderLoadingMessage(locationEl, "Загрузка данных о текущем расположении...");
+}
+
+export function renderWeatherloading() {
+  renderLoadingMessage(weatherEl, "Загрузка данных о погоде...");
+}
+
+export function renderLocationInfo(location) {
   locationEl.replaceChildren();
   if (location instanceof Error) {
     locationEl.append(
@@ -86,7 +86,7 @@ export function renderLocationInfo(locationEl, location) {
   }
 }
 
-export function renderWeatherInfo(weatherEl, weather) {
+export function renderWeatherInfo(weather) {
   weatherEl.replaceChildren();
   if (weather instanceof Error) {
     weatherEl.append(
