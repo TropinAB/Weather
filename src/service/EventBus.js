@@ -27,7 +27,9 @@ function EventBus() {
   /// вызов события
   this.trigger = function (event, data) {
     if (!events.has(event)) return;
-    events.get(event).forEach((listener) => listener && listener(data));
+    events
+      .get(event)
+      .forEach((listener) => listener && setTimeout(() => listener(data), 0));
   };
 }
 
