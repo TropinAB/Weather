@@ -1,4 +1,4 @@
-import * as weatherModule from "./weather.js";
+import { loadAndRenderWeatherData } from "./weather.js";
 
 global.fetch = jest.fn();
 const ERROR_MESSAGE = "Network error";
@@ -88,23 +88,32 @@ const successResponseWeather = {
 describe("Check loadAndRenderWeatherData", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
     jest.useRealTimers();
   });
 
+  const AllEvents = async (times = 3) => {
+    for (let i = 1; i <= times; i++) {
+      jest.runOnlyPendingTimers();
+      await Promise.resolve(); // Для запуска fetch
+    }
+  };
+
   it("loadAndRenderWeatherData is a function", () =>
-    expect(weatherModule.loadAndRenderWeatherData).toBeInstanceOf(Function));
+    expect(loadAndRenderWeatherData).toBeInstanceOf(Function));
 
   it("loadAndRenderWeatherData render page with errorResponse on Geo", async () => {
     fetch.mockResolvedValueOnce(errorResponse);
     const element = document.createElement("div");
 
-    await weatherModule.loadAndRenderWeatherData(element);
+    await loadAndRenderWeatherData(element);
+    await AllEvents();
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="location border"><label class="error"></label></div><div class="weather border"><label class="loading"></label></div>"`,
+      `"<h1 class="header"></h1><div class="location border"><label class="error"></label></div><div class="weather border"></div>"`,
     );
   });
 
@@ -112,10 +121,11 @@ describe("Check loadAndRenderWeatherData", () => {
     fetch.mockRejectedValue(new Error(ERROR_MESSAGE));
     const element = document.createElement("div");
 
-    await weatherModule.loadAndRenderWeatherData(element);
+    await loadAndRenderWeatherData(element);
+    await AllEvents();
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="location border"><label class="error"></label></div><div class="weather border"><label class="loading"></label></div>"`,
+      `"<h1 class="header"></h1><div class="location border"><label class="error"></label></div><div class="weather border"></div>"`,
     );
   });
 
@@ -125,7 +135,8 @@ describe("Check loadAndRenderWeatherData", () => {
       .mockRejectedValue(new Error(ERROR_MESSAGE));
     const element = document.createElement("div");
 
-    await weatherModule.loadAndRenderWeatherData(element);
+    await loadAndRenderWeatherData(element);
+    await AllEvents(6);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
       `"<h1 class="header"></h1><div class="location border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div><div class="weather border"><label class="error"></label></div>"`,
@@ -136,10 +147,11 @@ describe("Check loadAndRenderWeatherData", () => {
     fetch.mockResolvedValueOnce(nullResponse);
     const element = document.createElement("div");
 
-    await weatherModule.loadAndRenderWeatherData(element);
+    await loadAndRenderWeatherData(element);
+    await AllEvents();
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="location border"><label class="error"></label></div><div class="weather border"><label class="loading"></label></div>"`,
+      `"<h1 class="header"></h1><div class="location border"><label class="error"></label></div><div class="weather border"></div>"`,
     );
   });
 
@@ -149,7 +161,8 @@ describe("Check loadAndRenderWeatherData", () => {
       .mockResolvedValueOnce(errorResponse);
     const element = document.createElement("div");
 
-    await weatherModule.loadAndRenderWeatherData(element);
+    await loadAndRenderWeatherData(element);
+    await AllEvents(6);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
       `"<h1 class="header"></h1><div class="location border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div><div class="weather border"><label class="error"></label></div>"`,
@@ -162,7 +175,8 @@ describe("Check loadAndRenderWeatherData", () => {
       .mockResolvedValueOnce(nullResponse);
     const element = document.createElement("div");
 
-    await weatherModule.loadAndRenderWeatherData(element);
+    await loadAndRenderWeatherData(element);
+    await AllEvents(6);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
       `"<h1 class="header"></h1><div class="location border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div><div class="weather border"><label class="error"></label></div>"`,
@@ -175,7 +189,8 @@ describe("Check loadAndRenderWeatherData", () => {
       .mockResolvedValueOnce(successResponseWeather);
     const element = document.createElement("div");
 
-    await weatherModule.loadAndRenderWeatherData(element);
+    await loadAndRenderWeatherData(element);
+    await AllEvents(6);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
       `"<h1 class="header"></h1><div class="location border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div><div class="weather border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div>"`,

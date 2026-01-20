@@ -1,5 +1,8 @@
 import { eventBus } from "./EventBus";
 
+export const eventNameGetForLocation = "weather:getForLocation";
+export const eventNameResult = "weather:loaded";
+
 const WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather";
 const API_ID = [
   "d",
@@ -38,7 +41,7 @@ const API_ID = [
   .reverse()
   .join("");
 
-async function getWeatherData([latitude, longitude]) {
+async function getWeatherData(latitude, longitude) {
   let result;
   try {
     const url = `${WEATHER_URL}?units=metric&lat=${latitude}&lon=${longitude}&appid=${API_ID}&lang=ru`;
@@ -50,8 +53,8 @@ async function getWeatherData([latitude, longitude]) {
   } catch (error) {
     result = error;
   }
-  eventBus.trigger("weather:loaded", result);
+  eventBus.trigger(eventNameResult, result);
 }
 
 /// зарегистрировать вызывающее событие
-eventBus.on("weather:getForLocation", getWeatherData);
+eventBus.on(eventNameGetForLocation, getWeatherData);

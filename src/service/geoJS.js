@@ -1,5 +1,8 @@
 import { eventBus } from "./EventBus";
 
+export const eventNameCall = "geo:getLocation";
+export const eventNameResult = "geo:loaded";
+
 async function getCurrentLocationData() {
   let result;
   try {
@@ -11,8 +14,8 @@ async function getCurrentLocationData() {
   } catch (error) {
     result = error;
   }
-  eventBus.trigger("geo:loaded", result);
+  eventBus.trigger(eventNameResult, result);
 }
 
 /// зарегистрировать вызывающее событие
-eventBus.on("geo:getLocation", getCurrentLocationData);
+eventBus.on(eventNameCall, getCurrentLocationData);

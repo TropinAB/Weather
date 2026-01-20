@@ -24,20 +24,28 @@ describe("Check eventBus", () => {
     beforeEach(() => {
       eventBus.clearEvents();
       jest.clearAllMocks();
+      jest.useFakeTimers();
+    });
+    afterEach(() => {
+      jest.useRealTimers();
     });
 
     it("single event single handler", () => {
       eventBus.on(eventName1, handler1);
+      jest.runAllTimers();
       expect(handler1).not.toHaveBeenCalled();
       eventBus.trigger(eventName1, data1);
+      jest.runAllTimers();
       expect(handler1).toHaveBeenLastCalledWith(data1);
     });
 
     it("single event double handlers disabled", () => {
       eventBus.on(eventName1, handler1);
       eventBus.on(eventName1, handler1);
+      jest.runAllTimers();
       expect(handler1).not.toHaveBeenCalled();
       eventBus.trigger(eventName1, data1);
+      jest.runAllTimers();
       expect(handler1).toHaveBeenCalledTimes(1);
       expect(handler1).toHaveBeenLastCalledWith(data1);
     });
@@ -45,8 +53,10 @@ describe("Check eventBus", () => {
     it("single event double handlers enabled", () => {
       eventBus.on(eventName1, handler1, true);
       eventBus.on(eventName1, handler1, true);
+      jest.runAllTimers();
       expect(handler1).not.toHaveBeenCalled();
       eventBus.trigger(eventName1, data1);
+      jest.runAllTimers();
       expect(handler1).toHaveBeenCalledTimes(2);
       expect(handler1).toHaveBeenLastCalledWith(data1);
     });
@@ -55,14 +65,17 @@ describe("Check eventBus", () => {
       eventBus.on(eventName1, handler1);
       eventBus.on(eventName2, handler1);
       eventBus.on(eventName2, handler2);
+      jest.runAllTimers();
       expect(handler1).not.toHaveBeenCalled();
       expect(handler2).not.toHaveBeenCalled();
 
       eventBus.trigger(eventName1, data1);
+      jest.runAllTimers();
       expect(handler1).toHaveBeenCalledTimes(1);
       expect(handler1).toHaveBeenLastCalledWith(data1);
 
       eventBus.trigger(eventName2, data2);
+      jest.runAllTimers();
       expect(handler1).toHaveBeenCalledTimes(2);
       expect(handler1).toHaveBeenLastCalledWith(data2);
       expect(handler2).toHaveBeenCalledTimes(1);
@@ -72,10 +85,12 @@ describe("Check eventBus", () => {
     it("double events double handler and off", () => {
       eventBus.on(eventName2, handler1);
       eventBus.on(eventName2, handler2);
+      jest.runAllTimers();
       expect(handler1).not.toHaveBeenCalled();
       expect(handler2).not.toHaveBeenCalled();
 
       eventBus.trigger(eventName2, data2);
+      jest.runAllTimers();
       expect(handler1).toHaveBeenCalledTimes(1);
       expect(handler1).toHaveBeenLastCalledWith(data2);
       expect(handler2).toHaveBeenCalledTimes(1);
@@ -84,6 +99,7 @@ describe("Check eventBus", () => {
       eventBus.off(eventName2, handler1);
 
       eventBus.trigger(eventName2, data1);
+      jest.runAllTimers();
       expect(handler1).toHaveBeenCalledTimes(1);
       expect(handler2).toHaveBeenCalledTimes(2);
       expect(handler2).toHaveBeenLastCalledWith(data1);

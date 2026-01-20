@@ -6,8 +6,8 @@ import {
   renderLocationInfo,
   renderWeatherInfo,
 } from "./views/weather";
-import "./service/geoJS";
-import "./service/openWeatherMap";
+import * as geo from "./service/geoJS";
+import * as weather from "./service/openWeatherMap";
 import { eventBus } from "./service/EventBus";
 
 function processWeatherData(weather) {
@@ -19,18 +19,19 @@ function processLocationData(location) {
 
   if (location && location.latitude && location.longitude) {
     renderWeatherloading();
-    eventBus.on("weather:loaded", processWeatherData);
-    eventBus.trigger("weather:getForLocation", [
+    eventBus.on(weather.eventNameResult, processWeatherData);
+    eventBus.trigger(
+      weather.eventNameGetForLocation,
       location.latitude,
       location.longitude,
-    ]);
+    );
   }
 }
 
 function requestLocationData() {
   renderLocationloading();
-  eventBus.on("geo:loaded", processLocationData);
-  eventBus.trigger("geo:getLocation");
+  eventBus.on(geo.eventNameResult, processLocationData);
+  eventBus.trigger(geo.eventNameCall);
 }
 
 export async function loadAndRenderWeatherData(element) {
