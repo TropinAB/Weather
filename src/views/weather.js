@@ -1,10 +1,17 @@
-let locationEl, weatherEl;
+import { eventBus } from "/src/service/EventBus";
+
+export const eventNameCityChanged = "city:changed";
+
+let menuEl = null,
+  contentEl = null,
+  cityEl = null,
+  dataEl = null;
 
 function createElementWithClassAndText(tagName, className, text) {
   const newEl = document.createElement(tagName);
   if (Array.isArray(className)) {
     className.forEach((classNm) => newEl.classList.add(classNm));
-  } else {
+  } else if (className) {
     newEl.classList.add(className);
   }
   newEl.innerText = text;
@@ -24,6 +31,23 @@ function addInfoElement(parentEl, description, value) {
   parentEl.append(divEl);
 }
 
+function renderMainMenu(element) {
+  const menuAboutEl = createElementWithClassAndText(
+    "a",
+    ["menu-item", "border"],
+    "О приложении",
+  );
+  menuAboutEl.href = "/about";
+  element.append(menuAboutEl);
+  const menuWeatherEl = createElementWithClassAndText(
+    "a",
+    ["menu-item", "border"],
+    "Погода в городах",
+  );
+  menuWeatherEl.href = "/weather";
+  element.append(menuWeatherEl);
+}
+
 export function renderMainPage(element) {
   element.append(
     createElementWithClassAndText(
@@ -32,10 +56,45 @@ export function renderMainPage(element) {
       `Моё первое приложение "Погода"`,
     ),
   );
-  locationEl = createElementWithClassAndText("div", ["location", "border"], "");
-  element.append(locationEl);
-  weatherEl = createElementWithClassAndText("div", ["weather", "border"], "");
-  element.append(weatherEl);
+  menuEl = createElementWithClassAndText("div", ["menu"], "");
+  renderMainMenu(menuEl);
+  element.append(menuEl);
+  contentEl = createElementWithClassAndText("div", [], "");
+  element.append(contentEl);
+}
+
+export function renderAboutPage() {
+  contentEl.replaceChildren(
+    createElementWithClassAndText("h2", "", `Приложение "Погода"`),
+  );
+  addInfoElement(contentEl, "Разработчик", "Тропин А.Б.");
+  dataEl = null;
+  cityEl = null;
+}
+
+function getCityNameElement() {
+  cityEl = createElementWithClassAndText("div", "border", ""); //document.createElement("div");
+  cityEl.append(
+    createElementWithClassAndText(
+      "label",
+      "input-description",
+      "Показать погоду в городе: ",
+    ),
+  );
+  const cityInput = createElementWithClassAndText("input", "input", "");
+  cityInput.addEventListener("input", (event) => {
+    event.target.value &&
+      eventBus.triggerDebounced(1000, eventNameCityChanged, event.target.value);
+  });
+  cityEl.append(cityInput);
+  return cityEl;
+}
+
+export function initWeatherPage() {
+  cityEl = cityEl || getCityNameElement();
+  contentEl.replaceChildren(cityEl);
+  dataEl = createElementWithClassAndText("div", [], "");
+  contentEl.append(dataEl);
 }
 
 function renderLoadingMessage(element, message) {
@@ -47,23 +106,29 @@ function renderLoadingMessage(element, message) {
   element.append(labelLoading);
 }
 
-export function renderLocationloading() {
-  renderLoadingMessage(locationEl, "Загрузка данных о текущем расположении...");
+export function renderLocationLoading() {
+  initWeatherPage();
+  renderLoadingMessage(dataEl, "Загрузка данных о текущем расположении...");
 }
 
-export function renderWeatherloading() {
-  renderLoadingMessage(weatherEl, "Загрузка данных о погоде...");
+export function renderWeatherLoading() {
+  initWeatherPage();
+  renderLoadingMessage(dataEl, "Загрузка данных о погоде...");
 }
 
 export function renderLocationInfo(location) {
-  locationEl.replaceChildren();
+  const locationEl = createElementWithClassAndText(
+    "div",
+    ["location", "border"],
+    "",
+  );
+  dataEl.replaceChildren(locationEl);
   if (location instanceof Error) {
     locationEl.append(
       createElementWithClassAndText("label", "error", location.message),
     );
     return;
   }
-  //console.log(location);
   if (location) {
     locationEl.append(
       createElementWithClassAndText(
@@ -87,7 +152,12 @@ export function renderLocationInfo(location) {
 }
 
 export function renderWeatherInfo(weather) {
-  weatherEl.replaceChildren();
+  const weatherEl = createElementWithClassAndText(
+    "div",
+    ["weather", "border"],
+    "",
+  );
+  dataEl.replaceChildren(weatherEl);
   if (weather instanceof Error) {
     weatherEl.append(
       createElementWithClassAndText("label", "error", weather.message),
@@ -96,7 +166,11 @@ export function renderWeatherInfo(weather) {
   }
   if (weather) {
     weatherEl.append(
-      createElementWithClassAndText("label", "info-header", "Данные о погоде"),
+      createElementWithClassAndText(
+        "label",
+        "info-header",
+        `Данные о погоде в городе '${weather.name}'`,
+      ),
     );
     if (weather.main) {
       addInfoElement(weatherEl, "Текущая температура, °C", weather.main.temp);

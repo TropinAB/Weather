@@ -113,7 +113,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents();
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="location border"><label class="error"></label></div><div class="weather border"></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
 
@@ -125,7 +125,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents();
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="location border"><label class="error"></label></div><div class="weather border"></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
 
@@ -139,7 +139,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(6);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="location border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div><div class="weather border"><label class="error"></label></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
 
@@ -151,7 +151,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents();
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="location border"><label class="error"></label></div><div class="weather border"></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
 
@@ -165,7 +165,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(6);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="location border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div><div class="weather border"><label class="error"></label></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
 
@@ -179,7 +179,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(6);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="location border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div><div class="weather border"><label class="error"></label></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
 
@@ -193,7 +193,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(6);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="location border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div><div class="weather border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
 });

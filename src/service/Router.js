@@ -11,7 +11,9 @@ export function Router() {
   const processRoute = (routeData) => {
     const args = { currentPath, previousPath, state: history.state };
 
-    routeData.onEnter && isMatch(routeData.route) && routeData.onEnter(args);
+    routeData.onEnter &&
+      isMatch(routeData.route, currentPath) &&
+      routeData.onEnter(args);
   };
 
   const processAllRoutes = () => routes.forEach(processRoute);
