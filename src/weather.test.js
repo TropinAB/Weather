@@ -1,8 +1,6 @@
 import { eventBus } from "./service/EventBus";
-import { loadAndRenderWeatherData } from "./weather";
-import { eventNameCityChanged } from "./views/weather";
+import { loadAndRenderWeatherData, eventNameRequestLocation } from "./weather";
 
-global.fetch = jest.fn();
 const ERROR_MESSAGE = "Network error";
 const errorResponse = {
   ok: false,
@@ -96,10 +94,10 @@ const successResponseWeather = {
 };
 
 describe("Check loadAndRenderWeatherData", () => {
+  global.fetch = jest.fn();
   beforeEach(() => {
-    jest.clearAllMocks();
     jest.useFakeTimers();
-    history.back();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
@@ -117,12 +115,12 @@ describe("Check loadAndRenderWeatherData", () => {
     expect(loadAndRenderWeatherData).toBeInstanceOf(Function));
 
   it("loadAndRenderWeatherData render page with errorResponse on Geo", async () => {
-    console.log("-----------------------------------------------");
-    fetch.mockResolvedValueOnce(errorResponse);
+    fetch.mockResolvedValue(errorResponse);
     const element = document.createElement("div");
 
     await loadAndRenderWeatherData(element);
-    await AllEvents(5);
+    await AllEvents();
+    expect(fetch).toHaveBeenCalledTimes(1);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
       `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
@@ -130,12 +128,15 @@ describe("Check loadAndRenderWeatherData", () => {
   });
 
   it("loadAndRenderWeatherData render page with successResponse on Geo with Nil", async () => {
-    console.log("-----------------------------------------------");
-    fetch.mockResolvedValueOnce(successResponseGeoNil);
+    fetch.mockResolvedValue(successResponseGeoNil);
     const element = document.createElement("div");
 
     await loadAndRenderWeatherData(element);
-    await AllEvents(6);
+    await AllEvents();
+    expect(fetch).toHaveBeenCalledTimes(0);
+
+    eventBus.trigger(eventNameRequestLocation);
+    await AllEvents(4);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
       `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
@@ -148,6 +149,9 @@ describe("Check loadAndRenderWeatherData", () => {
 
     await loadAndRenderWeatherData(element);
     await AllEvents();
+
+    eventBus.trigger(eventNameRequestLocation);
+    await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
       `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
@@ -163,8 +167,11 @@ describe("Check loadAndRenderWeatherData", () => {
     await loadAndRenderWeatherData(element);
     await AllEvents(6);
 
+    eventBus.trigger(eventNameRequestLocation);
+    await AllEvents(10);
+
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
     );
   });
 
@@ -174,6 +181,9 @@ describe("Check loadAndRenderWeatherData", () => {
 
     await loadAndRenderWeatherData(element);
     await AllEvents();
+
+    eventBus.trigger(eventNameRequestLocation);
+    await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
       `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
@@ -189,8 +199,11 @@ describe("Check loadAndRenderWeatherData", () => {
     await loadAndRenderWeatherData(element);
     await AllEvents(6);
 
+    eventBus.trigger(eventNameRequestLocation);
+    await AllEvents(10);
+
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
     );
   });
 
@@ -203,8 +216,11 @@ describe("Check loadAndRenderWeatherData", () => {
     await loadAndRenderWeatherData(element);
     await AllEvents(6);
 
+    eventBus.trigger(eventNameRequestLocation);
+    await AllEvents(10);
+
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
     );
   });
 
@@ -217,8 +233,11 @@ describe("Check loadAndRenderWeatherData", () => {
     await loadAndRenderWeatherData(element);
     await AllEvents(6);
 
+    eventBus.trigger(eventNameRequestLocation);
+    await AllEvents(10);
+
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div></div></div>"`,
     );
   });
 
@@ -233,7 +252,7 @@ describe("Check loadAndRenderWeatherData", () => {
 
     const menuAboutEl = element.querySelector('a[href="/about"]');
     menuAboutEl.click();
-    await AllEvents(6);
+    await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
       `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><h2></h2><div><label class="info-description"></label><label class="info-value"></label></div></div>"`,
@@ -267,17 +286,33 @@ describe("Check loadAndRenderWeatherData", () => {
     await loadAndRenderWeatherData(element);
     await AllEvents(6);
 
-    // const menuWeatherEl = element.querySelector('a[href="/weather"]');
-    // menuWeatherEl.click();
-    // const cityInputEl = element.querySelector('input');
-    // cityInputEl.value = "Moscow";
-    eventBus.trigger(eventNameCityChanged, "Moscow");
-    await AllEvents(6);
+    const cityInput = element.querySelector("input");
+    cityInput.value = "Moscow";
+    cityInput.dispatchEvent(new window.Event("input"));
+    await AllEvents(10);
+
+    // eventBus.trigger(eventNameRequestLocation);
+    // await AllEvents(10);
+
+    // expect(fetch).toHaveBeenCalledWith("")
+    // expect(fetch).toHaveBeenCalledTimes(1);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
       `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div></div></div>"`,
     );
   });
 
-  //
+  it("loadAndRenderWeatherData render page and click on not menu-item", async () => {
+    fetch
+      .mockResolvedValueOnce(successResponseGeo)
+      .mockResolvedValueOnce(successResponseWeather);
+    const element = document.createElement("div");
+
+    await loadAndRenderWeatherData(element);
+    await AllEvents(6);
+
+    element.click();
+
+    expect(fetch).toHaveBeenCalled();
+  });
 });

@@ -14,11 +14,9 @@ import * as weather from "./service/openWeatherMap";
 import { eventBus } from "./service/EventBus";
 import { Router } from "./service/Router";
 
+export const eventNameRequestLocation = "request:location";
+export const eventNameRequestWeather = "request:weather";
 const router = new Router();
-
-function processWeatherData(weather) {
-  renderWeatherInfo(weather);
-}
 
 function processLocationData(location) {
   if (
@@ -27,14 +25,11 @@ function processLocationData(location) {
   ) {
     location = Error(`Не удалось определить Ваше местоположение :(`);
   }
-  console.log(location);
   renderLocationInfo(location);
 
   if (location && location.latitude && location.longitude) {
-    renderWeatherLoading();
-    eventBus.on(weather.eventNameResult, processWeatherData);
     eventBus.trigger(
-      weather.eventNameGetForLocation,
+      eventNameRequestWeather,
       location.latitude,
       location.longitude,
     );
@@ -49,22 +44,27 @@ function requestLocationData() {
   eventBus.trigger(geo.eventNameCall);
 }
 
+function requestWeatherData(...params) {
+  renderWeatherLoading();
+  eventBus.on(weather.eventNameResult, renderWeatherInfo);
+  eventBus.trigger(weather.eventNameGetForLocation, ...params);
+}
+
 function isWeather(path) {
   return path.startsWith("/weather");
 }
 
-function processWeatherPage(url) {
-  const cityName = decodeURIComponent(url.currentPath.replace("/weather", ""))
+function processWeatherPage(routeData) {
+  const cityName = decodeURIComponent(
+    routeData.currentPath.replace("/weather", ""),
+  )
     .replaceAll("/", " ")
     .trim();
 
   initWeatherPage();
   if (cityName) {
-    renderWeatherLoading();
-    eventBus.on(weather.eventNameResult, processWeatherData);
-    eventBus.trigger(weather.eventNameGetForLocation, cityName);
+    eventBus.trigger(eventNameRequestWeather, cityName);
   }
-  console.log("processWeatherPage end");
 }
 
 function requestWeatherForCity(cityName) {
@@ -73,7 +73,7 @@ function requestWeatherForCity(cityName) {
 }
 
 function clickHandler(event) {
-  if (!event.target.matches("a")) return;
+  if (!event.target.classList.contains("menu-item")) return;
 
   event.preventDefault();
   router.go(event.target.getAttribute("href"));
@@ -81,12 +81,13 @@ function clickHandler(event) {
 
 export async function loadAndRenderWeatherData(element) {
   renderMainPage(element);
+  element.addEventListener("click", clickHandler);
 
   router.on("/", requestLocationData);
   router.on("/about", renderAboutPage);
   router.on(isWeather, processWeatherPage);
 
-  element.addEventListener("click", clickHandler);
-
   eventBus.on(eventNameCityChanged, requestWeatherForCity);
+  eventBus.on(eventNameRequestLocation, requestLocationData);
+  eventBus.on(eventNameRequestWeather, requestWeatherData);
 }

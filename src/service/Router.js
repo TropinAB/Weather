@@ -9,7 +9,6 @@ export function Router() {
     (typeof route === "string" && route === path);
 
   const processRoute = (routeData) => {
-    console.log(currentPath, routeData, isMatch(routeData.route, currentPath));
     const args = { currentPath, previousPath, state: history.state };
 
     routeData.onEnter &&
