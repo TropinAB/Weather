@@ -44,7 +44,7 @@ function renderMainMenu(element) {
     ["menu-item", "border"],
     "Погода в городах",
   );
-  menuWeatherEl.href = "/weather";
+  menuWeatherEl.href = "/city";
   element.append(menuWeatherEl);
 }
 
