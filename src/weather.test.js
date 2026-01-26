@@ -123,7 +123,7 @@ describe("Check loadAndRenderWeatherData", () => {
     expect(fetch).toHaveBeenCalledTimes(1);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
 
@@ -139,7 +139,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(4);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
 
@@ -154,7 +154,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
 
@@ -171,7 +171,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
     );
   });
 
@@ -186,7 +186,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
 
@@ -203,7 +203,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
     );
   });
 
@@ -220,7 +220,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
     );
   });
 
@@ -237,7 +237,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div></div></div>"`,
     );
   });
 
@@ -255,7 +255,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><h2></h2><div><label class="info-description"></label><label class="info-value"></label></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><h2></h2><div><label class="info-description"></label><label class="info-value"></label></div></div>"`,
     );
   });
 
@@ -268,12 +268,12 @@ describe("Check loadAndRenderWeatherData", () => {
     await loadAndRenderWeatherData(element);
     await AllEvents(6);
 
-    const menuWeatherEl = element.querySelector('a[href="/weather"]');
+    const menuWeatherEl = element.querySelector('a[href="/city"]');
     menuWeatherEl.click();
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
 
@@ -298,7 +298,7 @@ describe("Check loadAndRenderWeatherData", () => {
     // expect(fetch).toHaveBeenCalledTimes(1);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div></div></div>"`,
     );
   });
 
