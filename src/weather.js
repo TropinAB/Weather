@@ -27,6 +27,7 @@ function processLocationData(location) {
   ) {
     location = Error(`Не удалось определить Ваше местоположение :(`);
   }
+  console.log(location);
   renderLocationInfo(location);
 
   if (location && location.latitude && location.longitude) {
@@ -63,6 +64,7 @@ function processWeatherPage(url) {
     eventBus.on(weather.eventNameResult, processWeatherData);
     eventBus.trigger(weather.eventNameGetForLocation, cityName);
   }
+  console.log("processWeatherPage end");
 }
 
 function requestWeatherForCity(cityName) {

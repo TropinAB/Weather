@@ -39,7 +39,6 @@ function EventBus() {
     eventsTimerId.set(
       event,
       setTimeout(() => {
-        console.log(event, content);
         eventsTimerId.delete(event);
         content.trigger.call(content, event, ...data);
       }, timeout),

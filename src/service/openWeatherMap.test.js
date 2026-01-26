@@ -85,7 +85,7 @@ describe("Check getWeatherData function", () => {
     const processResults = jest.fn();
 
     eventBus.on(weather.eventNameResult, processResults);
-    eventBus.trigger(weather.eventNameGetForLocation);
+    eventBus.trigger(weather.eventNameGetForLocation, 1, 2);
 
     await AllEvents();
 
@@ -101,7 +101,7 @@ describe("Check getWeatherData function", () => {
     const processResults = jest.fn();
 
     eventBus.on(weather.eventNameResult, processResults);
-    eventBus.trigger(weather.eventNameGetForLocation);
+    eventBus.trigger(weather.eventNameGetForLocation, 1, 2);
 
     await AllEvents();
 
@@ -111,13 +111,40 @@ describe("Check getWeatherData function", () => {
       expect.toMatchInlineSnapshot(`[Error: Ошибка 404: Страница не найдена]`),
     );
   });
-  it("test Success response", async () => {
+  it("test Success response for empty params", async () => {
     fetch.mockResolvedValueOnce(successResponse);
 
     const processResults = jest.fn();
 
     eventBus.on(weather.eventNameResult, processResults);
     eventBus.trigger(weather.eventNameGetForLocation);
+
+    await AllEvents();
+
+    expect(fetch).not.toHaveBeenCalled();
+    expect(processResults).not.toHaveBeenCalled();
+  });
+  it("test Success response", async () => {
+    fetch.mockResolvedValueOnce(successResponse);
+
+    const processResults = jest.fn();
+
+    eventBus.on(weather.eventNameResult, processResults);
+    eventBus.trigger(weather.eventNameGetForLocation, 1, 2);
+
+    await AllEvents();
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledWith(successData);
+  });
+  it("test Success response for city name", async () => {
+    fetch.mockResolvedValueOnce(successResponse);
+
+    const processResults = jest.fn();
+
+    eventBus.on(weather.eventNameResult, processResults);
+    eventBus.trigger(weather.eventNameGetForLocation, "Moscow");
 
     await AllEvents();
 

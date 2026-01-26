@@ -42,14 +42,13 @@ const API_ID = [
 const WEATHER_URL = `https://api.openweathermap.org/data/2.5/weather?units=metric&appid=${API_ID}&lang=ru`;
 
 async function getWeatherData(...params) {
-  if (!params) return;
-
   let result, url;
   try {
     if (params.length === 1 && typeof params[0] === "string")
       url = `${WEATHER_URL}&q=${params[0]}`;
     else if (params.length === 2)
       url = `${WEATHER_URL}&lat=${params[0]}&lon=${params[1]}`;
+    else return;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Ошибка ${response.status}: ${response.statusText}`);

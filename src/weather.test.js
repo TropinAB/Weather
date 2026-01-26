@@ -1,4 +1,6 @@
-import { loadAndRenderWeatherData } from "./weather.js";
+import { eventBus } from "./service/EventBus";
+import { loadAndRenderWeatherData } from "./weather";
+import { eventNameCityChanged } from "./views/weather";
 
 global.fetch = jest.fn();
 const ERROR_MESSAGE = "Network error";
@@ -28,9 +30,17 @@ const successDataGeo = {
   latitude: "59.8983",
   longitude: "30.2618",
 };
+const successDataGeoNil = {
+  latitude: "nil",
+  longitude: "nil",
+};
 const successResponseGeo = {
   ok: true,
   json: () => Promise.resolve(successDataGeo),
+};
+const successResponseGeoNil = {
+  ok: true,
+  json: () => Promise.resolve(successDataGeoNil),
 };
 const successDataWeather = {
   coord: {
@@ -89,6 +99,7 @@ describe("Check loadAndRenderWeatherData", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
+    history.back();
   });
 
   afterEach(() => {
@@ -106,11 +117,25 @@ describe("Check loadAndRenderWeatherData", () => {
     expect(loadAndRenderWeatherData).toBeInstanceOf(Function));
 
   it("loadAndRenderWeatherData render page with errorResponse on Geo", async () => {
+    console.log("-----------------------------------------------");
     fetch.mockResolvedValueOnce(errorResponse);
     const element = document.createElement("div");
 
     await loadAndRenderWeatherData(element);
-    await AllEvents();
+    await AllEvents(5);
+
+    expect(element.innerHTML).toMatchInlineSnapshot(
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
+    );
+  });
+
+  it("loadAndRenderWeatherData render page with successResponse on Geo with Nil", async () => {
+    console.log("-----------------------------------------------");
+    fetch.mockResolvedValueOnce(successResponseGeoNil);
+    const element = document.createElement("div");
+
+    await loadAndRenderWeatherData(element);
+    await AllEvents(6);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
       `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
@@ -196,4 +221,63 @@ describe("Check loadAndRenderWeatherData", () => {
       `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
     );
   });
+
+  it("loadAndRenderWeatherData render page with success Response and click About", async () => {
+    fetch
+      .mockResolvedValueOnce(successResponseGeo)
+      .mockResolvedValueOnce(successResponseWeather);
+    const element = document.createElement("div");
+
+    await loadAndRenderWeatherData(element);
+    await AllEvents(6);
+
+    const menuAboutEl = element.querySelector('a[href="/about"]');
+    menuAboutEl.click();
+    await AllEvents(6);
+
+    expect(element.innerHTML).toMatchInlineSnapshot(
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><h2></h2><div><label class="info-description"></label><label class="info-value"></label></div></div>"`,
+    );
+  });
+
+  it("loadAndRenderWeatherData render page with success Response and click Weather", async () => {
+    fetch
+      .mockResolvedValueOnce(successResponseGeo)
+      .mockResolvedValueOnce(successResponseWeather);
+    const element = document.createElement("div");
+
+    await loadAndRenderWeatherData(element);
+    await AllEvents(6);
+
+    const menuWeatherEl = element.querySelector('a[href="/weather"]');
+    menuWeatherEl.click();
+    await AllEvents(10);
+
+    expect(element.innerHTML).toMatchInlineSnapshot(
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
+    );
+  });
+
+  it("loadAndRenderWeatherData render page with success Response for City", async () => {
+    fetch
+      .mockResolvedValueOnce(successResponseGeo)
+      .mockResolvedValueOnce(successResponseWeather);
+    const element = document.createElement("div");
+
+    await loadAndRenderWeatherData(element);
+    await AllEvents(6);
+
+    // const menuWeatherEl = element.querySelector('a[href="/weather"]');
+    // menuWeatherEl.click();
+    // const cityInputEl = element.querySelector('input');
+    // cityInputEl.value = "Moscow";
+    eventBus.trigger(eventNameCityChanged, "Moscow");
+    await AllEvents(6);
+
+    expect(element.innerHTML).toMatchInlineSnapshot(
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/weather"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div></div></div>"`,
+    );
+  });
+
+  //
 });
