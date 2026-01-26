@@ -13,7 +13,12 @@ export default defineConfig([
     files: ["**/*.{js,mjs,cjs}"],
     plugins: { js },
     extends: ["js/recommended"],
-    languageOptions: { globals: { ...globals.browser, ...globals.node } },
+    languageOptions: { 
+      globals: { 
+        ...globals.browser, 
+        ...globals.node,
+        PREFIX: 'readonly',
+    } },
     rules: {
       semi: ["error", "always"], // отсутствие ';'
       "no-var": "error", // Запрещает использование var, требует использования const или let

@@ -37,14 +37,14 @@ function renderMainMenu(element) {
     ["menu-item", "border"],
     "О приложении",
   );
-  menuAboutEl.href = "/about";
+  menuAboutEl.href = PREFIX + "about";
   element.append(menuAboutEl);
   const menuWeatherEl = createElementWithClassAndText(
     "a",
     ["menu-item", "border"],
     "Погода в городах",
   );
-  menuWeatherEl.href = "/city";
+  menuWeatherEl.href = PREFIX + "city";
   element.append(menuWeatherEl);
 }
 
@@ -73,7 +73,7 @@ export function renderAboutPage() {
 }
 
 function getCityNameElement() {
-  cityEl = createElementWithClassAndText("div", "border", ""); //document.createElement("div");
+  cityEl = createElementWithClassAndText("div", "border", "");
   cityEl.append(
     createElementWithClassAndText(
       "label",

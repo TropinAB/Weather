@@ -34,7 +34,7 @@ function processLocationData(location) {
       location.longitude,
     );
   } else {
-    router.go("/city");
+    router.go(PREFIX + "city");
   }
 }
 
@@ -51,12 +51,12 @@ function requestWeatherData(...params) {
 }
 
 function isWeather(path) {
-  return path.startsWith("/city");
+  return path.startsWith(PREFIX + "city");
 }
 
 function processWeatherPage(routeData) {
   const cityName = decodeURIComponent(
-    routeData.currentPath.replace("/city", ""),
+    routeData.currentPath.replace(PREFIX + "city", ""),
   )
     .replaceAll("/", " ")
     .trim();
@@ -69,7 +69,7 @@ function processWeatherPage(routeData) {
 
 function requestWeatherForCity(cityName) {
   cityName = cityName.replace(" ", "/");
-  router.go(`/city/${cityName}`);
+  router.go(`${PREFIX}city/${cityName}`);
 }
 
 function clickHandler(event) {
@@ -87,7 +87,7 @@ export async function loadAndRenderWeatherData(element) {
   eventBus.on(eventNameRequestLocation, requestLocationData);
   eventBus.on(eventNameRequestWeather, requestWeatherData);
 
-  router.on("/", requestLocationData);
-  router.on("/about", renderAboutPage);
+  router.on(PREFIX, requestLocationData);
+  router.on(PREFIX + "about", renderAboutPage);
   router.on(isWeather, processWeatherPage);
 }
