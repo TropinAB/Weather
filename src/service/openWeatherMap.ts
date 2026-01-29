@@ -1,53 +1,10 @@
 import { eventBus } from "./EventBus";
+import { WeatherData } from "../types/openWeatherMap";
 
 export const eventNameRequestForLocation = "weather:requestForLocation";
 export const eventNameRequestForCity = "weather:requestForLocation";
 export const eventNameResult = "weather:loaded";
 export const eventNameError = "weather:error";
-type WeatherLine = {
-  id: number;
-  main: string;
-  description: string;
-  icon: string;
-};
-export type WeatherData = {
-  coord: {
-    lon: number;
-    lat: number;
-  };
-  weather: WeatherLine[];
-  base: string;
-  main: {
-    temp: number;
-    feels_like: number;
-    temp_min: number;
-    temp_max: number;
-    pressure: number;
-    humidity: number;
-    sea_level: number;
-    grnd_level: number;
-  };
-  visibility: number;
-  wind: {
-    speed: number;
-    deg: number;
-  };
-  clouds: {
-    all: number;
-  };
-  dt: number;
-  sys: {
-    type: number;
-    id: number;
-    country: string;
-    sunrise: number;
-    sunset: number;
-  };
-  timezone: number;
-  id: number;
-  name: string;
-  cod: number;
-};
 
 const API_ID = [
   "d",
