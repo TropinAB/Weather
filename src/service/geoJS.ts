@@ -1,4 +1,4 @@
-import { eventBus } from "./EventBus.js";
+import { eventBus } from "./EventBus";
 
 export const eventNameCall = "geo:requestCurrentLocation";
 export const eventNameResult = "geo:loaded";
