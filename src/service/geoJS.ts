@@ -1,7 +1,8 @@
 import { eventBus } from "./EventBus.js";
 
-export const eventNameCall = "geo:getLocation";
+export const eventNameCall = "geo:requestCurrentLocation";
 export const eventNameResult = "geo:loaded";
+export const eventNameError = "geo:error";
 export type GeoLocation = {
   accuracy: number;
   area_code: string;
@@ -29,7 +30,7 @@ function requestCurrentLocationData(): void {
       return response.json(); // as Promise<GeoLocation>;
     })
     .then((result: GeoLocation) => eventBus.trigger(eventNameResult, result))
-    .catch((error: Error) => eventBus.trigger(eventNameResult, error));
+    .catch((error: Error) => eventBus.trigger(eventNameError, error));
 }
 
 /// зарегистрировать вызывающее событие
