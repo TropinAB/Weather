@@ -1,15 +1,28 @@
-import { eventBus } from "/src/service/EventBus";
+import { eventBus } from "../service/EventBus";
+import { GeoJSLocation } from "../types/geoJS";
+import { WeatherData } from "../types/openWeatherMap";
 
 export const eventNameCityChanged = "city:changed";
 
+<<<<<<< HEAD:src/views/weather.js
 let menuEl = null,
   contentEl = null,
   cityEl = null,
   historyEl = null,
   dataEl = null;
+=======
+let menuEl: HTMLElement | null = null;
+let contentEl: HTMLElement | null = null;
+let cityEl: HTMLElement | null = null;
+let dataEl: HTMLElement | null = null;
+>>>>>>> 2a6b89b (JS->TS view\weather + add d.ts with types):src/views/weather.ts
 
-function createElementWithClassAndText(tagName, className, text) {
-  const newEl = document.createElement(tagName);
+function createElementWithClassAndText(
+  tagName: string,
+  className: string | string[],
+  text: string,
+): HTMLElement {
+  const newEl: HTMLElement = document.createElement(tagName);
   if (Array.isArray(className)) {
     className.forEach((classNm) => newEl.classList.add(classNm));
   } else if (className) {
@@ -19,8 +32,12 @@ function createElementWithClassAndText(tagName, className, text) {
   return newEl;
 }
 
-function addInfoElement(parentEl, description, value) {
-  const divEl = document.createElement("div");
+function addInfoElement(
+  parentEl: HTMLElement,
+  description: string,
+  value: string,
+): void {
+  const divEl: HTMLElement = document.createElement("div");
   divEl.append(
     createElementWithClassAndText(
       "label",
@@ -32,24 +49,24 @@ function addInfoElement(parentEl, description, value) {
   parentEl.append(divEl);
 }
 
-function renderMainMenu(element) {
-  const menuAboutEl = createElementWithClassAndText(
+function renderMainMenu(element: HTMLElement): void {
+  const menuAboutEl: HTMLElement = createElementWithClassAndText(
     "a",
     ["menu-item", "border"],
     "О приложении",
   );
-  menuAboutEl.href = PREFIX + "about";
+  (menuAboutEl as HTMLAnchorElement).href = PREFIX + "about";
   element.append(menuAboutEl);
   const menuWeatherEl = createElementWithClassAndText(
     "a",
     ["menu-item", "border"],
     "Погода в городах",
   );
-  menuWeatherEl.href = PREFIX + "city";
+  (menuWeatherEl as HTMLAnchorElement).href = PREFIX + "city";
   element.append(menuWeatherEl);
 }
 
-export function renderMainPage(element) {
+export function renderMainPage(element: HTMLElement): void {
   element.append(
     createElementWithClassAndText(
       "h1",
@@ -64,15 +81,18 @@ export function renderMainPage(element) {
   element.append(contentEl);
 }
 
-export function renderAboutPage() {
-  contentEl.replaceChildren(
-    createElementWithClassAndText("h2", "", `Приложение "Погода"`),
-  );
-  addInfoElement(contentEl, "Разработчик", "Тропин А.Б.");
+export function renderAboutPage(): void {
+  if (contentEl) {
+    contentEl.replaceChildren(
+      createElementWithClassAndText("h2", "", `Приложение "Погода"`),
+    );
+    addInfoElement(contentEl, "Разработчик", "Тропин А.Б.");
+  }
   dataEl = null;
   cityEl = null;
 }
 
+<<<<<<< HEAD:src/views/weather.js
 function getCityNameElement() {
   cityEl = createElementWithClassAndText("div", ["flex-container"], "");
   const searchEl = createElementWithClassAndText(
@@ -86,6 +106,34 @@ function getCityNameElement() {
   cityInput.addEventListener("input", (event) => {
     event.target.value &&
       eventBus.triggerDebounced(1000, eventNameCityChanged, event.target.value);
+=======
+function createCityNameElement(): HTMLElement {
+  const cityEl: HTMLElement = createElementWithClassAndText(
+    "div",
+    "border",
+    "",
+  );
+  cityEl.append(
+    createElementWithClassAndText(
+      "label",
+      "input-description",
+      "Показать погоду в городе: ",
+    ),
+  );
+  const cityInput: HTMLElement = createElementWithClassAndText(
+    "input",
+    "input",
+    "",
+  );
+  cityInput.addEventListener("input", (event: Event) => {
+    event.target &&
+      (event.target as HTMLInputElement).value &&
+      eventBus.triggerDebounced(
+        1000,
+        eventNameCityChanged,
+        (event.target as HTMLInputElement).value,
+      );
+>>>>>>> 2a6b89b (JS->TS view\weather + add d.ts with types):src/views/weather.ts
   });
   searchEl.append(
     createElementWithClassAndText(
@@ -98,6 +146,7 @@ function getCityNameElement() {
   return cityEl;
 }
 
+<<<<<<< HEAD:src/views/weather.js
 export function renderHistory(weatherHistory) {
   if (!historyEl) return;
   const headerEl = createElementWithClassAndText(
@@ -127,10 +176,18 @@ export function initWeatherPage() {
   contentEl.replaceChildren(cityEl);
   dataEl = createElementWithClassAndText("div", [], "");
   contentEl.append(dataEl);
+=======
+export function initWeatherPage(): void {
+  if (contentEl) {
+    cityEl = cityEl || createCityNameElement();
+    dataEl = createElementWithClassAndText("div", [], "");
+    contentEl.replaceChildren(cityEl, dataEl);
+  }
+>>>>>>> 2a6b89b (JS->TS view\weather + add d.ts with types):src/views/weather.ts
 }
 
-function renderLoadingMessage(element, message) {
-  const labelLoading = createElementWithClassAndText(
+function renderLoadingMessage(element: HTMLElement, message: string): void {
+  const labelLoading: HTMLElement = createElementWithClassAndText(
     "label",
     "loading",
     message,
@@ -140,16 +197,18 @@ function renderLoadingMessage(element, message) {
 
 export function renderLocationLoading() {
   initWeatherPage();
-  renderLoadingMessage(dataEl, "Загрузка данных о текущем расположении...");
+  dataEl &&
+    renderLoadingMessage(dataEl, "Загрузка данных о текущем расположении...");
 }
 
 export function renderWeatherLoading() {
   initWeatherPage();
-  renderLoadingMessage(dataEl, "Загрузка данных о погоде...");
+  dataEl && renderLoadingMessage(dataEl, "Загрузка данных о погоде...");
 }
 
-export function renderLocationInfo(location) {
-  const locationEl = createElementWithClassAndText(
+export function renderLocationInfo(location: GeoJSLocation): void {
+  if (!dataEl) return;
+  const locationEl: HTMLElement = createElementWithClassAndText(
     "div",
     ["location", "border"],
     "",
@@ -183,7 +242,8 @@ export function renderLocationInfo(location) {
   }
 }
 
-export function renderWeatherInfo(weather) {
+export function renderWeatherInfo(weather: WeatherData) {
+  if (!dataEl) return;
   const weatherEl = createElementWithClassAndText(
     "div",
     ["weather", "border"],
@@ -223,6 +283,7 @@ export function renderWeatherInfo(weather) {
     container.append(containerMap, containerWeather);
     if (weather.main) {
       addInfoElement(
+<<<<<<< HEAD:src/views/weather.js
         containerWeather,
         "Текущая температура, °C",
         weather.main.temp,
@@ -255,6 +316,37 @@ export function renderWeatherInfo(weather) {
       map.src = `https://static-maps.yandex.ru/1.x/?ll=${weather.coord.lon},${weather.coord.lat}&spn=0.1,0.1&l=map&size=400,400`;
       map.alt = `Карта ${weather.name}`;
       containerMap.append(map);
+=======
+        weatherEl,
+        "Текущая температура, °C",
+        weather.main.temp.toString(),
+      );
+      addInfoElement(
+        weatherEl,
+        "Ощущается как, °C",
+        weather.main.feels_like.toString(),
+      );
+      addInfoElement(
+        weatherEl,
+        "Влажность, %",
+        weather.main.humidity.toString(),
+      );
+    }
+    if (weather.wind) {
+      addInfoElement(
+        weatherEl,
+        "Направление ветра, °",
+        weather.wind.deg.toString(),
+      );
+      addInfoElement(
+        weatherEl,
+        "Скорость ветра, м/с",
+        weather.wind.speed.toString(),
+      );
+    }
+    if (weather.clouds) {
+      addInfoElement(weatherEl, "Облачность, %", weather.clouds.all.toString());
+>>>>>>> 2a6b89b (JS->TS view\weather + add d.ts with types):src/views/weather.ts
     }
   } else {
     weatherEl.append(

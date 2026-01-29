@@ -1,25 +1,9 @@
 import { eventBus } from "./EventBus";
+import { GeoJSLocation } from "../types/geoJS";
 
 export const eventNameCall = "geo:requestCurrentLocation";
 export const eventNameResult = "geo:loaded";
 export const eventNameError = "geo:error";
-export type GeoLocation = {
-  accuracy: number;
-  area_code: string;
-  asn: number;
-  city: string;
-  continent_code: string;
-  country: string;
-  country_code: string;
-  country_code3: string;
-  ip: string;
-  latitude: string;
-  longitude: string;
-  organization: string;
-  organization_name: string;
-  region: string;
-  timezone: string;
-};
 
 function requestCurrentLocationData(): void {
   fetch("https://get.geojs.io/v1/ip/geo.json")
@@ -29,7 +13,7 @@ function requestCurrentLocationData(): void {
       }
       return response.json(); // as Promise<GeoLocation>;
     })
-    .then((result: GeoLocation) => eventBus.trigger(eventNameResult, result))
+    .then((result: GeoJSLocation) => eventBus.trigger(eventNameResult, result))
     .catch((error: Error) => eventBus.trigger(eventNameError, error));
 }
 
