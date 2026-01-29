@@ -2,7 +2,7 @@ type Handler<Params extends unknown[] = []> = (...params: Params) => void;
 
 class EventBus {
   private events: Map<string, Handler[]> = new Map();
-  private eventsTimerId: Map<string, number> = new Map();
+  private eventsTimerId: Map<string, ReturnType<typeof setTimeout>> = new Map();
 
   constructor() {}
 
