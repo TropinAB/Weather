@@ -26,21 +26,21 @@ class EventBus {
 
   /// удалить слушателя события
   off<Params extends unknown[]>(event: string, handler: Handler<Params>) {
-    if (!this.events.has(event)) return;
-    const handlers: Handler[] = (this.events.get(event) || []).filter(
-      (item: Handler) => item !== handler,
-    );
-    this.events.set(event, handlers);
+    let handlers: Handler[] | undefined = this.events.get(event);
+    if (handlers) {
+      handlers = handlers.filter((item: Handler) => item !== handler);
+      this.events.set(event, handlers);
+    }
   }
 
   /// вызов события
   trigger<Params extends unknown[]>(event: string, ...data: Params) {
-    if (this.events.has(event)) {
-      (this.events.get(event) || []).forEach(
+    let handlers: Handler[] | undefined = this.events.get(event);
+    handlers &&
+      handlers.forEach(
         (handler: Handler<Params>) =>
           handler && setTimeout(() => handler(...data), 0),
       );
-    }
   }
 
   triggerDebounced<Params extends unknown[]>(

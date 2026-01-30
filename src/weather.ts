@@ -26,6 +26,8 @@ const router = new Router();
 function processLocationData(location: GeoJSLocation): void {
   if (
     !location ||
+    !location.latitude ||
+    !location.longitude ||
     location.latitude === "nil" ||
     location.longitude === "nil"
   ) {
@@ -33,15 +35,11 @@ function processLocationData(location: GeoJSLocation): void {
   } else {
     renderLocationInfo(location);
 
-    if (location && location.latitude && location.longitude) {
-      eventBus.trigger(
-        eventNameRequestWeatherLocation,
-        location.latitude,
-        location.longitude,
-      );
-    } else {
-      router.go(PREFIX + "city", {});
-    }
+    eventBus.trigger(
+      eventNameRequestWeatherLocation,
+      location.latitude,
+      location.longitude,
+    );
   }
 }
 

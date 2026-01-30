@@ -173,14 +173,6 @@ export function renderLocationInfo(location: GeoJSLocation): void {
     if (location.country)
       addInfoElement(locationEl, "Страна", location.country);
     if (location.city) addInfoElement(locationEl, "Город", location.city);
-  } else {
-    locationEl.append(
-      createElementWithClassAndText(
-        "label",
-        "error",
-        "Данные о местоположении не получены",
-      ),
-    );
   }
 }
 
