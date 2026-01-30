@@ -60,7 +60,9 @@ function requestWeatherDataForLocation(
   latitude: string,
   longitude: string,
 ): void {
-  requestWeatherData(`${WEATHER_URL}&lat=${latitude}&lon=${longitude}`);
+  latitude &&
+    longitude &&
+    requestWeatherData(`${WEATHER_URL}&lat=${latitude}&lon=${longitude}`);
 }
 
 function requestWeatherDataForCity(cityName: string): void {

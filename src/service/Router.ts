@@ -56,9 +56,9 @@ export class Router {
   }
 
   public go(url: string, state: Object): void {
-    this.previousPath = this.currentPath;
+    // this.previousPath = this.currentPath;
     history.pushState(state, url, url);
-    this.currentPath = location.pathname;
+    // this.currentPath = location.pathname;
 
     this.processAllRoutes();
   }
