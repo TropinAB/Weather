@@ -14,7 +14,7 @@ function requestCurrentLocationData(): void {
       return response.json(); // as Promise<GeoLocation>;
     })
     .then((result: GeoJSLocation) => eventBus.trigger(eventNameResult, result))
-    .catch((error: Error) => eventBus.trigger(eventNameError, error));
+    .catch((error: Error) => eventBus.trigger(eventNameError, error.message));
 }
 
 /// зарегистрировать вызывающее событие

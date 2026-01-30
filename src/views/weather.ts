@@ -206,6 +206,17 @@ export function renderWeatherLoading() {
   dataEl && renderLoadingMessage(dataEl, "Загрузка данных о погоде...");
 }
 
+export function renderLocationError(error: string): void {
+  if (!dataEl) return;
+  const locationEl: HTMLElement = createElementWithClassAndText(
+    "div",
+    ["location", "border"],
+    "",
+  );
+  dataEl.replaceChildren(locationEl);
+  locationEl.append(createElementWithClassAndText("label", "error", error));
+}
+
 export function renderLocationInfo(location: GeoJSLocation): void {
   if (!dataEl) return;
   const locationEl: HTMLElement = createElementWithClassAndText(
@@ -214,12 +225,6 @@ export function renderLocationInfo(location: GeoJSLocation): void {
     "",
   );
   dataEl.replaceChildren(locationEl);
-  if (location instanceof Error) {
-    locationEl.append(
-      createElementWithClassAndText("label", "error", location.message),
-    );
-    return;
-  }
   if (location) {
     locationEl.append(
       createElementWithClassAndText(
@@ -242,6 +247,17 @@ export function renderLocationInfo(location: GeoJSLocation): void {
   }
 }
 
+export function renderWeatherError(error: string) {
+  if (!dataEl) return;
+  const weatherEl = createElementWithClassAndText(
+    "div",
+    ["weather", "border"],
+    "",
+  );
+  dataEl.replaceChildren(weatherEl);
+  weatherEl.append(createElementWithClassAndText("label", "error", error));
+}
+
 export function renderWeatherInfo(weather: WeatherData) {
   if (!dataEl) return;
   const weatherEl = createElementWithClassAndText(
@@ -250,12 +266,6 @@ export function renderWeatherInfo(weather: WeatherData) {
     "",
   );
   dataEl.replaceChildren(weatherEl);
-  if (weather instanceof Error) {
-    weatherEl.append(
-      createElementWithClassAndText("label", "error", weather.message),
-    );
-    return;
-  }
   if (weather) {
     const container = createElementWithClassAndText(
       "div",
