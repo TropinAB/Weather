@@ -62,7 +62,3 @@ class EventBus {
 }
 
 export const eventBus: EventBus = new EventBus();
-
-function h(a: string, b: string): void {}
-eventBus.on("", h);
-eventBus.off("", h);
