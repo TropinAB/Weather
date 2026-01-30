@@ -10,6 +10,7 @@
     "test": "jest",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
+    "type-check": "tsc --noEmit --strict --noUnusedLocals --noUnusedParameters --pretty",
     "prepare": "husky install"
   },
   "repository": {
