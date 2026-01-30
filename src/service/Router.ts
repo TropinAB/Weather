@@ -15,7 +15,9 @@ export class Router {
   private previousPath: string | null = null;
 
   constructor() {
-    window.addEventListener("popstate", this.processAllRoutes);
+    window.addEventListener("popstate", () => {
+      this.processAllRoutes();
+    });
   }
 
   private isMatch(route: RouteType, path: string): boolean {
@@ -39,11 +41,16 @@ export class Router {
   }
 
   private processAllRoutes(): void {
-    this.routes.forEach(this.processRoute);
+    this.previousPath = this.currentPath;
+    this.currentPath = location.pathname;
+    this.routes &&
+      this.routes.forEach((routeData: RouteData) => {
+        this.processRoute(routeData);
+      });
   }
 
   public on(route: RouteType, onEnter: RouteOnEnter): void {
-    const routeData = { route, onEnter };
+    const routeData: RouteData = { route, onEnter };
     this.routes.push(routeData);
     this.processRoute(routeData);
   }

@@ -107,6 +107,6 @@ export function loadAndRenderWeatherData(element: HTMLElement): void {
   eventBus.on(eventNameRequestWeatherLocation, requestWeatherForLocation);
 
   router.on(PREFIX, requestLocationData);
-  router.on(PREFIX + "about", renderAboutPage);
-  router.on(isWeather, processWeatherPage);
 }
+router.on(PREFIX + "about", renderAboutPage);
+router.on(isWeather, processWeatherPage);

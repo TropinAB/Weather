@@ -2,7 +2,7 @@ import { eventBus } from "./EventBus";
 import { WeatherData } from "../types/openWeatherMap";
 
 export const eventNameRequestForLocation = "weather:requestForLocation";
-export const eventNameRequestForCity = "weather:requestForLocation";
+export const eventNameRequestForCity = "weather:requestForCity";
 export const eventNameResult = "weather:loaded";
 export const eventNameError = "weather:error";
 
