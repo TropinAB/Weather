@@ -1,3 +1,8 @@
-node_modules 
-dist 
-coverage 
+node_modules/
+dist/
+coverage/
+lib/
+*.js
+!*.config.js  # исключение для конфигурационных файлов
+*.js.map
+*.d.ts
