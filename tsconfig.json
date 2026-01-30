@@ -10,7 +10,7 @@
     "module": "commonjs",
     "target": "esnext",
     "types": [],
-    "lib": ["es6", "dom"],
+    "lib": ["es6", "dom", "ES2021.String"],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],

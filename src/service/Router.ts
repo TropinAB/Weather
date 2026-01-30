@@ -1,10 +1,7 @@
+import { RouteArgs } from "../types/Router";
+
 type RouteMatchFunction = (path: string) => boolean;
 type RouteType = RegExp | string | RouteMatchFunction;
-type RouteArgs = {
-  currentPath: string;
-  previousPath: string | null;
-  state: Object; //history.state
-};
 type RouteOnEnter = (args: RouteArgs) => void;
 
 type RouteData = {

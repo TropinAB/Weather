@@ -53,7 +53,7 @@ function requestWeatherData(url: string): void {
       return response.json();
     })
     .then((result: WeatherData) => eventBus.trigger(eventNameResult, result))
-    .catch((error: Error) => eventBus.trigger(eventNameError, error));
+    .catch((error: Error) => eventBus.trigger(eventNameError, error.message));
 }
 
 function requestWeatherDataForLocation(
