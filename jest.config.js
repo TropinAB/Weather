@@ -50,6 +50,11 @@ const config = {
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: undefined,
   coverageThreshold: {
+    "src/service/EventBus.js": {
+      branches: 70,
+      functions: 70,
+      lines: 70,
+    },
     global: {
       branches: 80,
       functions: 80,
