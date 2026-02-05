@@ -1,10 +1,12 @@
-import { getWeatherData } from "./openWeatherMap";
+import * as weather from "./openWeatherMap";
+import { eventBus } from "./EventBus";
 
 describe("Check getWeatherData function", () => {
   global.fetch = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
@@ -70,26 +72,57 @@ describe("Check getWeatherData function", () => {
     json: () => Promise.resolve(successData),
   };
 
-  it("getCurrentLocationData is a function", () =>
-    expect(getWeatherData).toBeInstanceOf(Function));
+  const AllEvents = async (times = 3) => {
+    for (let i = 1; i <= times; i++) {
+      jest.runOnlyPendingTimers();
+      await Promise.resolve(); // Для запуска fetch
+    }
+  };
+
   it("test Network error", async () => {
     fetch.mockRejectedValue(new Error(ERROR_MESSAGE));
 
-    await expect(getWeatherData(1, 1)).resolves.toThrow(ERROR_MESSAGE);
+    const processResults = jest.fn();
+
+    eventBus.on(weather.eventNameResult, processResults);
+    eventBus.trigger(weather.eventNameGetForLocation);
+
+    await AllEvents();
+
     expect(fetch).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledWith(
+      expect.toMatchInlineSnapshot(`[Error: Network error]`),
+    );
   });
   it("test Error response", async () => {
     fetch.mockResolvedValueOnce(errorResponse);
 
-    await expect(getWeatherData()).resolves.toThrow(
-      `Ошибка 404: Страница не найдена`,
-    );
+    const processResults = jest.fn();
+
+    eventBus.on(weather.eventNameResult, processResults);
+    eventBus.trigger(weather.eventNameGetForLocation);
+
+    await AllEvents();
+
     expect(fetch).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledWith(
+      expect.toMatchInlineSnapshot(`[Error: Ошибка 404: Страница не найдена]`),
+    );
   });
   it("test Success response", async () => {
     fetch.mockResolvedValueOnce(successResponse);
 
-    await expect(getWeatherData()).resolves.toBe(successData);
+    const processResults = jest.fn();
+
+    eventBus.on(weather.eventNameResult, processResults);
+    eventBus.trigger(weather.eventNameGetForLocation);
+
+    await AllEvents();
+
     expect(fetch).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledWith(successData);
   });
 });

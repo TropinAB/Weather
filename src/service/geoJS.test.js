@@ -1,10 +1,12 @@
-import { getCurrentLocationData } from "./geoJS";
+import * as geo from "./geoJS";
+import { eventBus } from "./EventBus";
 
-describe("Check getCurrentLocationData function", () => {
+describe("Check geo module", () => {
   global.fetch = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
@@ -23,26 +25,57 @@ describe("Check getCurrentLocationData function", () => {
     json: () => Promise.resolve(successData),
   };
 
-  it("getCurrentLocationData is a function", () =>
-    expect(getCurrentLocationData).toBeInstanceOf(Function));
+  const AllEvents = async (times = 3) => {
+    for (let i = 1; i <= times; i++) {
+      jest.runOnlyPendingTimers();
+      await Promise.resolve(); // Для запуска fetch
+    }
+  };
+
   it("test Network error", async () => {
     fetch.mockRejectedValue(new Error(ERROR_MESSAGE));
 
-    await expect(getCurrentLocationData()).resolves.toThrow(ERROR_MESSAGE);
+    const processResults = jest.fn();
+
+    eventBus.on(geo.eventNameResult, processResults);
+    eventBus.trigger(geo.eventNameCall);
+
+    await AllEvents();
+
     expect(fetch).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledWith(
+      expect.toMatchInlineSnapshot(`[Error: Network error]`),
+    );
   });
   it("test Error response", async () => {
     fetch.mockResolvedValueOnce(errorResponse);
 
-    await expect(getCurrentLocationData()).resolves.toThrow(
-      `Ошибка 404: Страница не найдена`,
-    );
+    const processResults = jest.fn();
+
+    eventBus.on(geo.eventNameResult, processResults);
+    eventBus.trigger(geo.eventNameCall);
+
+    await AllEvents();
+
     expect(fetch).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledWith(
+      expect.toMatchInlineSnapshot(`[Error: Ошибка 404: Страница не найдена]`),
+    );
   });
   it("test Success response", async () => {
     fetch.mockResolvedValueOnce(successResponse);
 
-    await expect(getCurrentLocationData()).resolves.toBe(successData);
+    const processResults = jest.fn();
+
+    eventBus.on(geo.eventNameResult, processResults);
+    eventBus.trigger(geo.eventNameCall);
+
+    await AllEvents();
+
     expect(fetch).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledTimes(1);
+    expect(processResults).toHaveBeenCalledWith(successData);
   });
 });
