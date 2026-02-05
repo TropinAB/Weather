@@ -165,24 +165,64 @@ export function renderWeatherInfo(weather) {
     return;
   }
   if (weather) {
+    const container = createElementWithClassAndText(
+      "div",
+      "weather-container",
+      "",
+    );
     weatherEl.append(
       createElementWithClassAndText(
-        "label",
+        "text",
         "info-header",
         `Данные о погоде в городе '${weather.name}'`,
       ),
+      container,
     );
+    const containerMap = createElementWithClassAndText(
+      "div",
+      "weather-map",
+      "",
+    );
+    const containerWeather = createElementWithClassAndText(
+      "div",
+      "width100",
+      "",
+    );
+    container.append(containerMap, containerWeather);
     if (weather.main) {
-      addInfoElement(weatherEl, "Текущая температура, °C", weather.main.temp);
-      addInfoElement(weatherEl, "Ощущается как, °C", weather.main.feels_like);
-      addInfoElement(weatherEl, "Влажность, %", weather.main.humidity);
+      addInfoElement(
+        containerWeather,
+        "Текущая температура, °C",
+        weather.main.temp,
+      );
+      addInfoElement(
+        containerWeather,
+        "Ощущается как, °C",
+        weather.main.feels_like,
+      );
+      addInfoElement(containerWeather, "Влажность, %", weather.main.humidity);
     }
     if (weather.wind) {
-      addInfoElement(weatherEl, "Направление ветра, °", weather.wind.deg);
-      addInfoElement(weatherEl, "Скорость ветра, м/с", weather.wind.speed);
+      addInfoElement(
+        containerWeather,
+        "Направление ветра, °",
+        weather.wind.deg,
+      );
+      addInfoElement(
+        containerWeather,
+        "Скорость ветра, м/с",
+        weather.wind.speed,
+      );
     }
     if (weather.clouds) {
-      addInfoElement(weatherEl, "Облачность, %", weather.clouds.all);
+      addInfoElement(containerWeather, "Облачность, %", weather.clouds.all);
+    }
+    if (weather.coord) {
+      // https://static-maps.yandex.ru/1.x/?ll=30.2642,59.8944&spn=0.1,0.1&l=map&size=400,400
+      const map = createElementWithClassAndText("img", "map");
+      map.src = `https://static-maps.yandex.ru/1.x/?ll=${weather.coord.lon},${weather.coord.lat}&spn=0.1,0.1&l=map&size=400,400`;
+      map.alt = `Карта ${weather.name}`;
+      containerMap.append(map);
     }
   } else {
     weatherEl.append(

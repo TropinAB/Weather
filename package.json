@@ -4,9 +4,9 @@
   "description": "Weather",
   "private": true,
   "scripts": {
-    "build": "webpack --mode=production",
-    "build:dev": "webpack --mode=development",
-    "dev": "webpack serve --mode=development",
+    "build": "set NODE_ENV='production' && webpack --mode=production",
+    "build:dev": "set NODE_ENV='development' && webpack --mode=development",
+    "dev": "set NODE_ENV='development' && webpack serve --mode=development",
     "test": "jest",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
