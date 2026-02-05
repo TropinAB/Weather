@@ -56,9 +56,12 @@ body {
   font-size: 24px;
   margin: 5px;
 }
-.weather-container {
+.flex-container {
   display: flex;
   flex-direction: row;
+}
+.city-search {
+  width: 25%;
 }
 .weather-map {
   width: 400px;
@@ -67,4 +70,7 @@ body {
 }
 .width100 {
   width: 100%;
+}
+.history-wh {
+  column-count: 2;
 }

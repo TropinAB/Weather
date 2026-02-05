@@ -5,6 +5,7 @@ export const eventNameCityChanged = "city:changed";
 let menuEl = null,
   contentEl = null,
   cityEl = null,
+  historyEl = null,
   dataEl = null;
 
 function createElementWithClassAndText(tagName, className, text) {
@@ -73,21 +74,52 @@ export function renderAboutPage() {
 }
 
 function getCityNameElement() {
-  cityEl = createElementWithClassAndText("div", "border", "");
-  cityEl.append(
-    createElementWithClassAndText(
-      "label",
-      "input-description",
-      "Показать погоду в городе: ",
-    ),
+  cityEl = createElementWithClassAndText("div", ["flex-container"], "");
+  const searchEl = createElementWithClassAndText(
+    "div",
+    ["city-search", "border"],
+    "",
   );
+  historyEl = createElementWithClassAndText("div", ["width100", "border"], "");
+  cityEl.append(searchEl, historyEl);
   const cityInput = createElementWithClassAndText("input", "input", "");
   cityInput.addEventListener("input", (event) => {
     event.target.value &&
       eventBus.triggerDebounced(1000, eventNameCityChanged, event.target.value);
   });
-  cityEl.append(cityInput);
+  searchEl.append(
+    createElementWithClassAndText(
+      "label",
+      ["input-description", "width100"],
+      "Показать погоду в городе: ",
+    ),
+    cityInput,
+  );
   return cityEl;
+}
+
+export function renderHistory(weatherHistory) {
+  if (!historyEl) return;
+  const headerEl = createElementWithClassAndText(
+    "text",
+    "info-header",
+    "История просмотра данных о погоде",
+  );
+  const listEl = createElementWithClassAndText("ul", "history-wh", "");
+  weatherHistory &&
+    weatherHistory instanceof Array &&
+    weatherHistory.map((item) => {
+      const listItem = createElementWithClassAndText("li", "", "");
+      const aEl = createElementWithClassAndText(
+        "a",
+        "",
+        `${item.city}: ${item.temp}°C (${item.date})`,
+      );
+      aEl.href = PREFIX + `city/${item.city}`;
+      listItem.append(aEl);
+      listEl.append(listItem);
+    });
+  historyEl.replaceChildren(headerEl, listEl);
 }
 
 export function initWeatherPage() {
@@ -167,7 +199,7 @@ export function renderWeatherInfo(weather) {
   if (weather) {
     const container = createElementWithClassAndText(
       "div",
-      "weather-container",
+      "flex-container",
       "",
     );
     weatherEl.append(

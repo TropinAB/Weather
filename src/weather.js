@@ -8,9 +8,11 @@ import {
   renderWeatherLoading,
   renderLocationInfo,
   renderWeatherInfo,
+  renderHistory,
 } from "./views/weather";
 import * as geo from "./service/geoJS";
 import * as weather from "./service/openWeatherMap";
+import * as weatherHistory from "./service/weatherHistory";
 import { eventBus } from "./service/EventBus";
 import { Router } from "./service/Router";
 
@@ -44,9 +46,16 @@ function requestLocationData() {
   eventBus.trigger(geo.eventNameCall);
 }
 
+function processWeatherData(weather) {
+  renderWeatherInfo(weather);
+  if (weather && weather.name) {
+    eventBus.trigger(weatherHistory.eventNameAddToWH, weather);
+  }
+}
+
 function requestWeatherData(...params) {
   renderWeatherLoading();
-  eventBus.on(weather.eventNameResult, renderWeatherInfo);
+  eventBus.on(weather.eventNameResult, processWeatherData);
   eventBus.trigger(weather.eventNameGetForLocation, ...params);
 }
 
@@ -62,6 +71,8 @@ function processWeatherPage(routeData) {
     .trim();
 
   initWeatherPage();
+  eventBus.trigger(weatherHistory.eventNameGetWH);
+
   if (cityName) {
     eventBus.trigger(eventNameRequestWeather, cityName);
   }
@@ -86,6 +97,7 @@ export async function loadAndRenderWeatherData(element) {
   eventBus.on(eventNameCityChanged, requestWeatherForCity);
   eventBus.on(eventNameRequestLocation, requestLocationData);
   eventBus.on(eventNameRequestWeather, requestWeatherData);
+  eventBus.on(weatherHistory.eventNameResult, renderHistory);
 
   router.on(PREFIX, requestLocationData);
   router.on(PREFIX + "about", renderAboutPage);
