@@ -33,46 +33,50 @@ describe("Check geo module", () => {
   };
 
   it("test Network error", async () => {
-    fetch.mockRejectedValue(new Error(ERROR_MESSAGE));
+    (fetch as jest.Mock).mockRejectedValue(new Error(ERROR_MESSAGE));
 
     const processResults = jest.fn();
+    const processError = jest.fn();
 
     eventBus.on(geo.eventNameResult, processResults);
+    eventBus.on(geo.eventNameError, processError);
     eventBus.trigger(geo.eventNameCall);
 
-    await AllEvents();
+    await AllEvents(4);
 
     expect(fetch).toHaveBeenCalledTimes(1);
-    expect(processResults).toHaveBeenCalledTimes(1);
-    expect(processResults).toHaveBeenCalledWith(
-      expect.toMatchInlineSnapshot(`[Error: Network error]`),
-    );
+    expect(processResults).not.toHaveBeenCalled();
+    expect(processError).toHaveBeenCalledTimes(1);
+    expect(processError).toHaveBeenCalledWith(ERROR_MESSAGE);
   });
   it("test Error response", async () => {
-    fetch.mockResolvedValueOnce(errorResponse);
+    (fetch as jest.Mock).mockResolvedValueOnce(errorResponse);
 
     const processResults = jest.fn();
+    const processError = jest.fn();
 
     eventBus.on(geo.eventNameResult, processResults);
+    eventBus.on(geo.eventNameError, processError);
     eventBus.trigger(geo.eventNameCall);
 
-    await AllEvents();
+    await AllEvents(4);
 
     expect(fetch).toHaveBeenCalledTimes(1);
-    expect(processResults).toHaveBeenCalledTimes(1);
-    expect(processResults).toHaveBeenCalledWith(
-      expect.toMatchInlineSnapshot(`[Error: Ошибка 404: Страница не найдена]`),
+    expect(processResults).not.toHaveBeenCalled();
+    expect(processError).toHaveBeenCalledTimes(1);
+    expect(processError).toHaveBeenCalledWith(
+      "Ошибка 404: Страница не найдена",
     );
   });
   it("test Success response", async () => {
-    fetch.mockResolvedValueOnce(successResponse);
+    (fetch as jest.Mock).mockResolvedValueOnce(successResponse);
 
     const processResults = jest.fn();
 
     eventBus.on(geo.eventNameResult, processResults);
     eventBus.trigger(geo.eventNameCall);
 
-    await AllEvents();
+    await AllEvents(5);
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(processResults).toHaveBeenCalledTimes(1);

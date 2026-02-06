@@ -6,9 +6,12 @@ const NODE_ENV = process.env.NODE_ENV || "production";
 const PREFIX = NODE_ENV === "production" ? "/Weather/" : "/";
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./src/index.ts",
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
   output: {
-    publicPath: NODE_ENV === "production" ? PREFIX : "/",
+    publicPath: PREFIX,
     filename: "main.js",
     path: path.resolve(__dirname, "dist"),
   },
@@ -38,6 +41,11 @@ module.exports = {
   ],
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
       {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],

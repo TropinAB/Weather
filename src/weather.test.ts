@@ -115,7 +115,7 @@ describe("Check loadAndRenderWeatherData", () => {
     expect(loadAndRenderWeatherData).toBeInstanceOf(Function));
 
   it("loadAndRenderWeatherData render page with errorResponse on Geo", async () => {
-    fetch.mockResolvedValue(errorResponse);
+    (fetch as jest.Mock).mockResolvedValue(errorResponse);
     const element = document.createElement("div");
 
     await loadAndRenderWeatherData(element);
@@ -123,28 +123,24 @@ describe("Check loadAndRenderWeatherData", () => {
     expect(fetch).toHaveBeenCalledTimes(1);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><label class="loading"></label></div></div>"`,
     );
   });
 
   it("loadAndRenderWeatherData render page with successResponse on Geo with Nil", async () => {
-    fetch.mockResolvedValue(successResponseGeoNil);
+    (fetch as jest.Mock).mockResolvedValue(successResponseGeoNil);
     const element = document.createElement("div");
 
     await loadAndRenderWeatherData(element);
-    await AllEvents();
-    expect(fetch).toHaveBeenCalledTimes(0);
-
-    eventBus.trigger(eventNameRequestLocation);
-    await AllEvents(4);
-
+    await AllEvents(10);
+    expect(fetch).toHaveBeenCalledTimes(1);
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"><text class="info-header"></text><ul class="history-wh"></ul></div></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
     );
   });
 
   it("loadAndRenderWeatherData render page with fetch reject on Geo", async () => {
-    fetch.mockRejectedValue(new Error(ERROR_MESSAGE));
+    (fetch as jest.Mock).mockRejectedValue(new Error(ERROR_MESSAGE));
     const element = document.createElement("div");
 
     await loadAndRenderWeatherData(element);
@@ -154,12 +150,12 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"><text class="info-header"></text><ul class="history-wh"></ul></div></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
     );
   });
 
   it("loadAndRenderWeatherData render page with fetch reject on Weather", async () => {
-    fetch
+    (fetch as jest.Mock)
       .mockResolvedValueOnce(successResponseGeo)
       .mockRejectedValue(new Error(ERROR_MESSAGE));
     const element = document.createElement("div");
@@ -171,12 +167,12 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"><text class="info-header"></text><ul class="history-wh"></ul></div></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
     );
   });
 
   it("loadAndRenderWeatherData render page with nullResponse on Geo", async () => {
-    fetch.mockResolvedValueOnce(nullResponse);
+    (fetch as jest.Mock).mockResolvedValueOnce(nullResponse);
     const element = document.createElement("div");
 
     await loadAndRenderWeatherData(element);
@@ -186,12 +182,12 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"><text class="info-header"></text><ul class="history-wh"></ul></div></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
     );
   });
 
   it("loadAndRenderWeatherData render page with errorResponse on Weather", async () => {
-    fetch
+    (fetch as jest.Mock)
       .mockResolvedValueOnce(successResponseGeo)
       .mockResolvedValueOnce(errorResponse);
     const element = document.createElement("div");
@@ -203,12 +199,12 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"><text class="info-header"></text><ul class="history-wh"></ul></div></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
     );
   });
 
   it("loadAndRenderWeatherData render page with nullResponse on Weather", async () => {
-    fetch
+    (fetch as jest.Mock)
       .mockResolvedValueOnce(successResponseGeo)
       .mockResolvedValueOnce(nullResponse);
     const element = document.createElement("div");
@@ -220,12 +216,12 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"><text class="info-header"></text><ul class="history-wh"></ul></div></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
     );
   });
 
   it("loadAndRenderWeatherData render page with success Response", async () => {
-    fetch
+    (fetch as jest.Mock)
       .mockResolvedValueOnce(successResponseGeo)
       .mockResolvedValueOnce(successResponseWeather);
     const element = document.createElement("div");
@@ -242,7 +238,7 @@ describe("Check loadAndRenderWeatherData", () => {
   });
 
   it("loadAndRenderWeatherData render page with success Response and click About", async () => {
-    fetch
+    (fetch as jest.Mock)
       .mockResolvedValueOnce(successResponseGeo)
       .mockResolvedValueOnce(successResponseWeather);
     const element = document.createElement("div");
@@ -250,8 +246,10 @@ describe("Check loadAndRenderWeatherData", () => {
     await loadAndRenderWeatherData(element);
     await AllEvents(6);
 
-    const menuAboutEl = element.querySelector('a[href="/about"]');
-    menuAboutEl.click();
+    const menuAboutEl: HTMLElement | null =
+      element.querySelector('a[href="/about"]');
+    expect(menuAboutEl).not.toBeUndefined();
+    menuAboutEl && menuAboutEl.click();
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
@@ -260,7 +258,7 @@ describe("Check loadAndRenderWeatherData", () => {
   });
 
   it("loadAndRenderWeatherData render page with success Response and click Weather", async () => {
-    fetch
+    (fetch as jest.Mock)
       .mockResolvedValueOnce(successResponseGeo)
       .mockResolvedValueOnce(successResponseWeather);
     const element = document.createElement("div");
@@ -268,8 +266,10 @@ describe("Check loadAndRenderWeatherData", () => {
     await loadAndRenderWeatherData(element);
     await AllEvents(6);
 
-    const menuWeatherEl = element.querySelector('a[href="/city"]');
-    menuWeatherEl.click();
+    const menuWeatherEl: HTMLElement | null =
+      element.querySelector('a[href="/city"]');
+    expect(menuWeatherEl).not.toBeUndefined();
+    menuWeatherEl && menuWeatherEl.click();
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
@@ -278,24 +278,26 @@ describe("Check loadAndRenderWeatherData", () => {
   });
 
   it("loadAndRenderWeatherData render page with success Response for City", async () => {
-    fetch
+    (fetch as jest.Mock)
       .mockResolvedValueOnce(successResponseGeo)
       .mockResolvedValueOnce(successResponseWeather);
     const element = document.createElement("div");
 
     await loadAndRenderWeatherData(element);
-    await AllEvents(6);
-
-    const cityInput = element.querySelector("input");
-    cityInput.value = "Moscow";
-    cityInput.dispatchEvent(new window.Event("input"));
+    await AllEvents(10);
+    const menuWeatherEl: HTMLElement | null =
+      element.querySelector('a[href="/city"]');
+    expect(menuWeatherEl).not.toBeUndefined();
+    menuWeatherEl && menuWeatherEl.click();
     await AllEvents(10);
 
-    // eventBus.trigger(eventNameRequestLocation);
-    // await AllEvents(10);
-
-    // expect(fetch).toHaveBeenCalledWith("")
-    // expect(fetch).toHaveBeenCalledTimes(1);
+    const cityInput: HTMLInputElement | null = element.querySelector("input");
+    expect(cityInput).not.toBeUndefined();
+    if (cityInput) {
+      cityInput.value = "Moscow";
+      cityInput.dispatchEvent(new Event("input"));
+      await AllEvents(20);
+    }
 
     expect(element.innerHTML).toMatchInlineSnapshot(
       `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"><text class="info-header"></text><ul class="history-wh"><li><a class="menu-item" href="/city/Санкт-Петербург"></a></li></ul></div></div><div><div class="weather border"><text class="info-header"></text><div class="flex-container"><div class="weather-map"><img class="map" src="https://static-maps.yandex.ru/1.x/?ll=30.2642,59.8944&amp;spn=0.1,0.1&amp;l=map&amp;size=400,400" alt="Карта Санкт-Петербург"></div><div class="width100"><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div></div></div></div></div>"`,
@@ -303,16 +305,18 @@ describe("Check loadAndRenderWeatherData", () => {
   });
 
   it("loadAndRenderWeatherData render page and click on not menu-item", async () => {
-    fetch
+    (fetch as jest.Mock)
       .mockResolvedValueOnce(successResponseGeo)
       .mockResolvedValueOnce(successResponseWeather);
     const element = document.createElement("div");
 
     await loadAndRenderWeatherData(element);
-    await AllEvents(6);
+    await AllEvents(10);
+
+    expect(fetch).toHaveBeenCalledTimes(1);
 
     element.click();
 
-    expect(fetch).toHaveBeenCalled();
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,3 +1,5 @@
+import { WeatherData } from "../types/openWeatherMap";
+import { WeatherHistory } from "../types/weatherHistory";
 import { eventBus } from "./EventBus";
 
 export const eventNameGetWH = "weather-history:getHistory";
@@ -6,10 +8,10 @@ export const eventNameResult = "weather-history:loaded";
 
 const ITEM_NAME = "WeatherHistory";
 
-function loadWeatherHistory() {
-  let weatherHistory = [];
+function loadWeatherHistory(): WeatherHistory[] {
+  let weatherHistory: WeatherHistory[] = [];
   try {
-    const data = localStorage.getItem(ITEM_NAME);
+    const data: string | null = localStorage.getItem(ITEM_NAME);
     if (data && typeof data === "string") {
       weatherHistory = JSON.parse(data);
     }
@@ -20,12 +22,12 @@ function loadWeatherHistory() {
   return weatherHistory;
 }
 
-function requestWeatherHistory() {
-  const weatherHistory = loadWeatherHistory();
+function requestWeatherHistory(): void {
+  const weatherHistory: WeatherHistory[] = loadWeatherHistory();
   eventBus.trigger(eventNameResult, weatherHistory);
 }
 
-function addToWeatherHistory(weatherData) {
+function addToWeatherHistory(weatherData: WeatherData): void {
   let weatherHistory = loadWeatherHistory();
 
   if (weatherData && weatherData.name && weatherData.main) {
@@ -35,7 +37,7 @@ function addToWeatherHistory(weatherData) {
     );
 
     // добавить новый элемент в начало
-    const historyItem = {
+    const historyItem: WeatherHistory = {
       city: weatherData.name,
       temp: weatherData.main.temp,
       wind: weatherData.wind.speed,
