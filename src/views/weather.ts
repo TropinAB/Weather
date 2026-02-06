@@ -1,12 +1,14 @@
 import { eventBus } from "../service/EventBus";
 import { GeoJSLocation } from "../types/geoJS";
 import { WeatherData } from "../types/openWeatherMap";
+import { WeatherHistory } from "../types/weatherHistory";
 
 export const eventNameCityChanged = "city:changed";
 
 let menuEl: HTMLElement | null = null;
 let contentEl: HTMLElement | null = null;
 let cityEl: HTMLElement | null = null;
+let historyEl: HTMLElement | null = null;
 let dataEl: HTMLElement | null = null;
 
 function createElementWithClassAndText(
@@ -85,18 +87,14 @@ export function renderAboutPage(): void {
 }
 
 function createCityNameElement(): HTMLElement {
-  const cityEl: HTMLElement = createElementWithClassAndText(
+  cityEl = createElementWithClassAndText("div", ["flex-container"], "");
+  const searchEl = createElementWithClassAndText(
     "div",
-    "border",
+    ["city-search", "border"],
     "",
   );
-  cityEl.append(
-    createElementWithClassAndText(
-      "label",
-      "input-description",
-      "Показать погоду в городе: ",
-    ),
-  );
+  historyEl = createElementWithClassAndText("div", ["width100", "border"], "");
+  cityEl.append(searchEl, historyEl);
   const cityInput: HTMLElement = createElementWithClassAndText(
     "input",
     "input",
@@ -111,8 +109,43 @@ function createCityNameElement(): HTMLElement {
         (event.target as HTMLInputElement).value,
       );
   });
-  cityEl.append(cityInput);
+  searchEl.append(
+    createElementWithClassAndText(
+      "label",
+      ["input-description", "width100"],
+      "Показать погоду в городе: ",
+    ),
+    cityInput,
+  );
   return cityEl;
+}
+
+export function renderHistory(weatherHistory: WeatherHistory[]): void {
+  if (!historyEl) return;
+  const headerEl: HTMLElement = createElementWithClassAndText(
+    "text",
+    "info-header",
+    "История просмотра данных о погоде",
+  );
+  const listEl: HTMLElement = createElementWithClassAndText(
+    "ul",
+    "history-wh",
+    "",
+  );
+  weatherHistory &&
+    weatherHistory instanceof Array &&
+    weatherHistory.map((item) => {
+      const listItem: HTMLElement = createElementWithClassAndText("li", "", "");
+      const aEl: HTMLElement = createElementWithClassAndText(
+        "a",
+        "menu-item",
+        `${item.city}: ${item.temp}°C (${item.date})`,
+      );
+      (aEl as HTMLAnchorElement).href = PREFIX + `city/${item.city}`;
+      listItem.append(aEl);
+      listEl.append(listItem);
+    });
+  historyEl.replaceChildren(headerEl, listEl);
 }
 
 export function initWeatherPage(): void {
@@ -196,44 +229,73 @@ export function renderWeatherInfo(weather: WeatherData) {
   );
   dataEl.replaceChildren(weatherEl);
   if (weather) {
+    const container = createElementWithClassAndText(
+      "div",
+      "flex-container",
+      "",
+    );
     weatherEl.append(
       createElementWithClassAndText(
-        "label",
+        "text",
         "info-header",
         `Данные о погоде в городе '${weather.name}'`,
       ),
+      container,
     );
+    const containerMap = createElementWithClassAndText(
+      "div",
+      "weather-map",
+      "",
+    );
+    const containerWeather = createElementWithClassAndText(
+      "div",
+      "width100",
+      "",
+    );
+    container.append(containerMap, containerWeather);
+
     if (weather.main) {
       addInfoElement(
-        weatherEl,
+        containerWeather,
         "Текущая температура, °C",
         weather.main.temp.toString(),
       );
       addInfoElement(
-        weatherEl,
+        containerWeather,
         "Ощущается как, °C",
         weather.main.feels_like.toString(),
       );
       addInfoElement(
-        weatherEl,
+        containerWeather,
         "Влажность, %",
         weather.main.humidity.toString(),
       );
     }
     if (weather.wind) {
       addInfoElement(
-        weatherEl,
+        containerWeather,
         "Направление ветра, °",
         weather.wind.deg.toString(),
       );
       addInfoElement(
-        weatherEl,
+        containerWeather,
         "Скорость ветра, м/с",
         weather.wind.speed.toString(),
       );
     }
     if (weather.clouds) {
-      addInfoElement(weatherEl, "Облачность, %", weather.clouds.all.toString());
+      addInfoElement(
+        containerWeather,
+        "Облачность, %",
+        weather.clouds.all.toString(),
+      );
+    }
+    if (weather.coord) {
+      const map: HTMLElement = createElementWithClassAndText("img", "map", "");
+      (map as HTMLImageElement).src =
+        `https://static-maps.yandex.ru/1.x/?ll=${weather.coord.lon},${weather.coord.lat}&spn=0.1,0.1&l=map&size=400,400`;
+      (map as HTMLImageElement).alt = `Карта ${weather.name}`;
+      containerMap.append(map);
     }
   } else {
     weatherEl.append(

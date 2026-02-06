@@ -123,7 +123,7 @@ describe("Check loadAndRenderWeatherData", () => {
     expect(fetch).toHaveBeenCalledTimes(1);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><label class="loading"></label></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><label class="loading"></label></div></div>"`,
     );
   });
 
@@ -135,7 +135,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
     );
   });
 
@@ -150,7 +150,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
     );
   });
 
@@ -167,7 +167,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
     );
   });
 
@@ -182,7 +182,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
     );
   });
 
@@ -199,7 +199,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><div class="location border"><label class="error"></label></div></div></div>"`,
     );
   });
 
@@ -216,7 +216,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"></div></div><div><div class="weather border"><label class="error"></label></div></div></div>"`,
     );
   });
 
@@ -233,7 +233,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="info-header"></label><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"><text class="info-header"></text><ul class="history-wh"><li><a class="menu-item" href="/city/Санкт-Петербург"></a></li></ul></div></div><div><div class="weather border"><text class="info-header"></text><div class="flex-container"><div class="weather-map"><img class="map" src="https://static-maps.yandex.ru/1.x/?ll=30.2642,59.8944&amp;spn=0.1,0.1&amp;l=map&amp;size=400,400" alt="Карта Санкт-Петербург"></div><div class="width100"><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div><div><label class="info-description"></label><label class="info-value"></label></div></div></div></div></div></div>"`,
     );
   });
 
@@ -273,7 +273,7 @@ describe("Check loadAndRenderWeatherData", () => {
     await AllEvents(10);
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"><text class="info-header"></text><ul class="history-wh"><li><a class="menu-item" href="/city/Санкт-Петербург"></a></li></ul></div></div><div></div></div>"`,
     );
   });
 
@@ -300,7 +300,7 @@ describe("Check loadAndRenderWeatherData", () => {
     }
 
     expect(element.innerHTML).toMatchInlineSnapshot(
-      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="border"><label class="input-description"></label><input class="input"></div><div><div class="weather border"><label class="info-header"></label></div></div></div>"`,
+      `"<h1 class="header"></h1><div class="menu"><a class="menu-item border" href="/about"></a><a class="menu-item border" href="/city"></a></div><div><div class="flex-container"><div class="city-search border"><label class="input-description width100"></label><input class="input"></div><div class="width100 border"><text class="info-header"></text><ul class="history-wh"><li><a class="menu-item" href="/city/Санкт-Петербург"></a></li></ul></div></div><div><div class="weather border"><text class="info-header"></text><div class="flex-container"><div class="weather-map"></div><div class="width100"></div></div></div></div></div>"`,
     );
   });
 
