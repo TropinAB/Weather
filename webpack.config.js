@@ -2,7 +2,6 @@ const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-console.log('NODE_ENV =', process.env.NODE_ENV);
 const NODE_ENV = process.env.NODE_ENV || "production";
 const PREFIX = NODE_ENV === "production" ? "/Weather/" : "/";
 
