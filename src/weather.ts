@@ -10,13 +10,16 @@ import {
   renderWeatherInfo,
   renderLocationError,
   renderWeatherError,
+  renderHistory,
 } from "./views/weather";
 import * as geo from "./service/geoJS";
 import * as weather from "./service/openWeatherMap";
+import * as weatherHistory from "./service/weatherHistory";
 import { eventBus } from "./service/EventBus";
 import { Router } from "./service/Router";
 import { GeoJSLocation } from "./types/geoJS";
 import { RouteArgs } from "./types/Router";
+import { WeatherData } from "./types/openWeatherMap";
 
 export const eventNameRequestLocation = "request:location";
 export const eventNameRequestWeatherLocation = "request:weather:location";
@@ -50,16 +53,23 @@ function requestLocationData() {
   eventBus.trigger(geo.eventNameCall);
 }
 
+function processWeatherData(weather: WeatherData) {
+  renderWeatherInfo(weather);
+  if (weather && weather.name) {
+    eventBus.trigger(weatherHistory.eventNameAddToWH, weather);
+  }
+}
+
 function requestWeatherForLocation(latitude: string, longitude: string) {
   renderWeatherLoading();
-  eventBus.on(weather.eventNameResult, renderWeatherInfo);
+  eventBus.on(weather.eventNameResult, processWeatherData);
   eventBus.on(weather.eventNameError, renderWeatherError);
   eventBus.trigger(weather.eventNameRequestForLocation, latitude, longitude);
 }
 
 function requestWeatherForCity(cityName: string) {
   renderWeatherLoading();
-  eventBus.on(weather.eventNameResult, renderWeatherInfo);
+  eventBus.on(weather.eventNameResult, processWeatherData);
   eventBus.on(weather.eventNameError, renderWeatherError);
   eventBus.trigger(weather.eventNameRequestForCity, cityName);
 }
@@ -76,6 +86,8 @@ function processWeatherPage(routeData: RouteArgs) {
     .trim();
 
   initWeatherPage();
+  eventBus.trigger(weatherHistory.eventNameGetWH);
+
   if (cityName) {
     eventBus.trigger(eventNameRequestWeatherCity, cityName);
   }
@@ -87,8 +99,11 @@ function cityChanged(cityName: string) {
 }
 
 function clickHandler(event: Event) {
-  if (!event.target) return;
-  if (!(event.target as HTMLElement).classList.contains("menu-item")) return;
+  if (
+    !event.target ||
+    !(event.target as HTMLElement).classList.contains("menu-item")
+  )
+    return;
 
   event.preventDefault();
   const url: string | null = (event.target as HTMLElement).getAttribute("href");
@@ -103,8 +118,9 @@ export function loadAndRenderWeatherData(element: HTMLElement): void {
   eventBus.on(eventNameRequestLocation, requestLocationData);
   eventBus.on(eventNameRequestWeatherCity, requestWeatherForCity);
   eventBus.on(eventNameRequestWeatherLocation, requestWeatherForLocation);
+  eventBus.on(weatherHistory.eventNameResult, renderHistory);
 
+  router.on(PREFIX + "about", renderAboutPage);
+  router.on(isWeather, processWeatherPage);
   router.on(PREFIX, requestLocationData);
 }
-router.on(PREFIX + "about", renderAboutPage);
-router.on(isWeather, processWeatherPage);
