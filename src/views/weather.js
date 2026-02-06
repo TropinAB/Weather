@@ -112,7 +112,7 @@ export function renderHistory(weatherHistory) {
       const listItem = createElementWithClassAndText("li", "", "");
       const aEl = createElementWithClassAndText(
         "a",
-        "",
+        "menu-item",
         `${item.city}: ${item.temp}°C (${item.date})`,
       );
       aEl.href = PREFIX + `city/${item.city}`;
