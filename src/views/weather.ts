@@ -253,6 +253,7 @@ export function renderWeatherInfo(weather: WeatherData) {
       "",
     );
     container.append(containerMap, containerWeather);
+
     if (weather.main) {
       addInfoElement(
         containerWeather,
