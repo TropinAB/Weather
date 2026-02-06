@@ -1,5 +1,6 @@
 function EventBus() {
   const events = new Map();
+  const eventsTimerId = new Map();
 
   /// очистить все события
   this.clearEvents = function () {
@@ -30,6 +31,18 @@ function EventBus() {
     events
       .get(event)
       .forEach((handler) => handler && setTimeout(() => handler(...data), 0));
+  };
+
+  this.triggerDebounced = function (timeout, event, ...data) {
+    const content = this;
+    if (eventsTimerId.has(event)) clearTimeout(eventsTimerId.get(event));
+    eventsTimerId.set(
+      event,
+      setTimeout(() => {
+        eventsTimerId.delete(event);
+        content.trigger.call(content, event, ...data);
+      }, timeout),
+    );
   };
 }
 

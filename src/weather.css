@@ -42,3 +42,35 @@ body {
   color: red;
   font-weight: 700;
 }
+.menu {
+  padding: 20px 0px;
+  background-color: cyan;
+}
+.menu-item {
+  background-color: lightcyan;
+}
+.input-description {
+  margin: 5px;
+}
+.input {
+  font-size: 24px;
+  margin: 5px;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row;
+}
+.city-search {
+  width: 25%;
+}
+.weather-map {
+  width: 400px;
+  height: 400px;
+  padding: 10px;
+}
+.width100 {
+  width: 100%;
+}
+.history-wh {
+  column-count: 2;
+}

@@ -1,10 +1,18 @@
-let locationEl, weatherEl;
+import { eventBus } from "/src/service/EventBus";
+
+export const eventNameCityChanged = "city:changed";
+
+let menuEl = null,
+  contentEl = null,
+  cityEl = null,
+  historyEl = null,
+  dataEl = null;
 
 function createElementWithClassAndText(tagName, className, text) {
   const newEl = document.createElement(tagName);
   if (Array.isArray(className)) {
     className.forEach((classNm) => newEl.classList.add(classNm));
-  } else {
+  } else if (className) {
     newEl.classList.add(className);
   }
   newEl.innerText = text;
@@ -24,6 +32,23 @@ function addInfoElement(parentEl, description, value) {
   parentEl.append(divEl);
 }
 
+function renderMainMenu(element) {
+  const menuAboutEl = createElementWithClassAndText(
+    "a",
+    ["menu-item", "border"],
+    "О приложении",
+  );
+  menuAboutEl.href = PREFIX + "about";
+  element.append(menuAboutEl);
+  const menuWeatherEl = createElementWithClassAndText(
+    "a",
+    ["menu-item", "border"],
+    "Погода в городах",
+  );
+  menuWeatherEl.href = PREFIX + "city";
+  element.append(menuWeatherEl);
+}
+
 export function renderMainPage(element) {
   element.append(
     createElementWithClassAndText(
@@ -32,10 +57,76 @@ export function renderMainPage(element) {
       `Моё первое приложение "Погода"`,
     ),
   );
-  locationEl = createElementWithClassAndText("div", ["location", "border"], "");
-  element.append(locationEl);
-  weatherEl = createElementWithClassAndText("div", ["weather", "border"], "");
-  element.append(weatherEl);
+  menuEl = createElementWithClassAndText("div", ["menu"], "");
+  renderMainMenu(menuEl);
+  element.append(menuEl);
+  contentEl = createElementWithClassAndText("div", [], "");
+  element.append(contentEl);
+}
+
+export function renderAboutPage() {
+  contentEl.replaceChildren(
+    createElementWithClassAndText("h2", "", `Приложение "Погода"`),
+  );
+  addInfoElement(contentEl, "Разработчик", "Тропин А.Б.");
+  dataEl = null;
+  cityEl = null;
+}
+
+function getCityNameElement() {
+  cityEl = createElementWithClassAndText("div", ["flex-container"], "");
+  const searchEl = createElementWithClassAndText(
+    "div",
+    ["city-search", "border"],
+    "",
+  );
+  historyEl = createElementWithClassAndText("div", ["width100", "border"], "");
+  cityEl.append(searchEl, historyEl);
+  const cityInput = createElementWithClassAndText("input", "input", "");
+  cityInput.addEventListener("input", (event) => {
+    event.target.value &&
+      eventBus.triggerDebounced(1000, eventNameCityChanged, event.target.value);
+  });
+  searchEl.append(
+    createElementWithClassAndText(
+      "label",
+      ["input-description", "width100"],
+      "Показать погоду в городе: ",
+    ),
+    cityInput,
+  );
+  return cityEl;
+}
+
+export function renderHistory(weatherHistory) {
+  if (!historyEl) return;
+  const headerEl = createElementWithClassAndText(
+    "text",
+    "info-header",
+    "История просмотра данных о погоде",
+  );
+  const listEl = createElementWithClassAndText("ul", "history-wh", "");
+  weatherHistory &&
+    weatherHistory instanceof Array &&
+    weatherHistory.map((item) => {
+      const listItem = createElementWithClassAndText("li", "", "");
+      const aEl = createElementWithClassAndText(
+        "a",
+        "menu-item",
+        `${item.city}: ${item.temp}°C (${item.date})`,
+      );
+      aEl.href = PREFIX + `city/${item.city}`;
+      listItem.append(aEl);
+      listEl.append(listItem);
+    });
+  historyEl.replaceChildren(headerEl, listEl);
+}
+
+export function initWeatherPage() {
+  cityEl = cityEl || getCityNameElement();
+  contentEl.replaceChildren(cityEl);
+  dataEl = createElementWithClassAndText("div", [], "");
+  contentEl.append(dataEl);
 }
 
 function renderLoadingMessage(element, message) {
@@ -47,23 +138,29 @@ function renderLoadingMessage(element, message) {
   element.append(labelLoading);
 }
 
-export function renderLocationloading() {
-  renderLoadingMessage(locationEl, "Загрузка данных о текущем расположении...");
+export function renderLocationLoading() {
+  initWeatherPage();
+  renderLoadingMessage(dataEl, "Загрузка данных о текущем расположении...");
 }
 
-export function renderWeatherloading() {
-  renderLoadingMessage(weatherEl, "Загрузка данных о погоде...");
+export function renderWeatherLoading() {
+  initWeatherPage();
+  renderLoadingMessage(dataEl, "Загрузка данных о погоде...");
 }
 
 export function renderLocationInfo(location) {
-  locationEl.replaceChildren();
+  const locationEl = createElementWithClassAndText(
+    "div",
+    ["location", "border"],
+    "",
+  );
+  dataEl.replaceChildren(locationEl);
   if (location instanceof Error) {
     locationEl.append(
       createElementWithClassAndText("label", "error", location.message),
     );
     return;
   }
-  //console.log(location);
   if (location) {
     locationEl.append(
       createElementWithClassAndText(
@@ -87,7 +184,12 @@ export function renderLocationInfo(location) {
 }
 
 export function renderWeatherInfo(weather) {
-  weatherEl.replaceChildren();
+  const weatherEl = createElementWithClassAndText(
+    "div",
+    ["weather", "border"],
+    "",
+  );
+  dataEl.replaceChildren(weatherEl);
   if (weather instanceof Error) {
     weatherEl.append(
       createElementWithClassAndText("label", "error", weather.message),
@@ -95,20 +197,64 @@ export function renderWeatherInfo(weather) {
     return;
   }
   if (weather) {
-    weatherEl.append(
-      createElementWithClassAndText("label", "info-header", "Данные о погоде"),
+    const container = createElementWithClassAndText(
+      "div",
+      "flex-container",
+      "",
     );
+    weatherEl.append(
+      createElementWithClassAndText(
+        "text",
+        "info-header",
+        `Данные о погоде в городе '${weather.name}'`,
+      ),
+      container,
+    );
+    const containerMap = createElementWithClassAndText(
+      "div",
+      "weather-map",
+      "",
+    );
+    const containerWeather = createElementWithClassAndText(
+      "div",
+      "width100",
+      "",
+    );
+    container.append(containerMap, containerWeather);
     if (weather.main) {
-      addInfoElement(weatherEl, "Текущая температура, °C", weather.main.temp);
-      addInfoElement(weatherEl, "Ощущается как, °C", weather.main.feels_like);
-      addInfoElement(weatherEl, "Влажность, %", weather.main.humidity);
+      addInfoElement(
+        containerWeather,
+        "Текущая температура, °C",
+        weather.main.temp,
+      );
+      addInfoElement(
+        containerWeather,
+        "Ощущается как, °C",
+        weather.main.feels_like,
+      );
+      addInfoElement(containerWeather, "Влажность, %", weather.main.humidity);
     }
     if (weather.wind) {
-      addInfoElement(weatherEl, "Направление ветра, °", weather.wind.deg);
-      addInfoElement(weatherEl, "Скорость ветра, м/с", weather.wind.speed);
+      addInfoElement(
+        containerWeather,
+        "Направление ветра, °",
+        weather.wind.deg,
+      );
+      addInfoElement(
+        containerWeather,
+        "Скорость ветра, м/с",
+        weather.wind.speed,
+      );
     }
     if (weather.clouds) {
-      addInfoElement(weatherEl, "Облачность, %", weather.clouds.all);
+      addInfoElement(containerWeather, "Облачность, %", weather.clouds.all);
+    }
+    if (weather.coord) {
+      // https://static-maps.yandex.ru/1.x/?ll=30.2642,59.8944&spn=0.1,0.1&l=map&size=400,400
+      const map = createElementWithClassAndText("img", "map");
+      map.src = `https://static-maps.yandex.ru/1.x/?ll=${weather.coord.lon},${weather.coord.lat}&spn=0.1,0.1&l=map&size=400,400`;
+      map.alt = `Карта ${weather.name}`;
+      containerMap.append(map);
     }
   } else {
     weatherEl.append(

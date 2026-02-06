@@ -116,5 +116,23 @@ describe("Check eventBus", () => {
         eventBus.trigger(eventName2, data2);
       }).not.toThrow();
     });
+
+    it("check triggerDebounced", () => {
+      eventBus.on(eventName1, handler1);
+      jest.runAllTimers();
+      expect(handler1).not.toHaveBeenCalled();
+
+      let message;
+      for (let step = 1; step <= 5; step++) {
+        message = `Test #${++step}`;
+        eventBus.triggerDebounced(50, eventName1, message);
+        jest.advanceTimersByTime(20);
+      }
+      expect(handler1).not.toHaveBeenCalled();
+      jest.advanceTimersByTime(20);
+      expect(handler1).not.toHaveBeenCalled();
+      jest.advanceTimersByTime(100);
+      expect(handler1).toHaveBeenLastCalledWith(message);
+    });
   });
 });

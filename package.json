@@ -4,8 +4,9 @@
   "description": "Weather",
   "private": true,
   "scripts": {
-    "build": "webpack --mode=production",
-    "dev": "webpack serve --mode=development",
+    "build": "set NODE_ENV='production' && webpack --mode=production",
+    "build:dev": "set NODE_ENV='development' && webpack --mode=development",
+    "dev": "set NODE_ENV='development' && webpack serve --mode=development",
     "test": "jest",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
@@ -33,6 +34,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jest": "^29.2.0",
     "globals": "^16.5.0",
+    "html-webpack-plugin": "^5.6.6",
     "husky": "^9.1.7",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.2.0",
@@ -42,9 +44,6 @@
     "webpack": "^5.103.0",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.2"
-  },
-  "dependencies": {
-    "html-webpack-plugin": "^5.6.5"
   },
   "lint-staged": {
     "*.js": "eslint --fix",
